@@ -42,3 +42,14 @@
 - 
 
 
+
+
+
+## More Information
+
+Medium Blog Post: 
+
+Youtube Demo: 
+
+##
+## Special Thanks to Professor Mark Santolucito and the staff at the Barnard Design Center for all of their help!!!
