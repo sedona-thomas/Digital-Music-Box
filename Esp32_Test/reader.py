@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # this code will read the touch values from the ESP32 and echo them on the command line
 # you could do something else more interesting with these values (e.g. visualize/sonify)
 

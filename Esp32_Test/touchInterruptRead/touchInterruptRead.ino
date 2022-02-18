@@ -1,6 +1,8 @@
 /*
-This is an example how to use Touch Intrrerupts and read touch values
-*/
+ * This is an example how to use Touch Intrrerupts and read touch values
+ * 
+ * @author Professor Mark Santolucito
+ */
 
 int threshold = 40;
 bool touch1detected = false;
