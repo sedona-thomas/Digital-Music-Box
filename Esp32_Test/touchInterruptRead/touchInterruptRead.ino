@@ -2,6 +2,7 @@
  * This is an example how to use Touch Intrrerupts and read touch values
  * 
  * @author Professor Mark Santolucito
+ * @link https://gist.github.com/santolucito/44410ed78def1b68b9994b74227f59ee
  */
 
 int threshold = 40;
