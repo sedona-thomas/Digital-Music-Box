@@ -8,7 +8,6 @@
   @link https://gist.github.com/santolucito/44410ed78def1b68b9994b74227f59ee
 '''
 
-
 import serial
 
 esp32_port = '/dev/cu.usbserial-023E564D'
