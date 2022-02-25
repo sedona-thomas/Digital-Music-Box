@@ -19,7 +19,7 @@ uint8_t touch2Val = 0;
 
 // main
 void setupSerial();
-void readPin(int pin);
+int readPin(int pin);
 void sendButton();
 void sendPotentiometer();
 void sendJoystick();
@@ -75,7 +75,7 @@ int readPin(int pin) { return analogRead(pin); }
 void sendButton() {
   Serial.println("<button>");
 
-  readPin();
+  readPin(1);
   Serial.println();
 
   Serial.println("</button>");
@@ -85,7 +85,7 @@ void sendButton() {
 void sendPotentiometer() {
   Serial.println("<potentiometer>");
 
-  int pinValue = analogRead(pin);
+  int pinValue = analogRead(1);
 
   Serial.println("</potentiometer>");
 }
@@ -94,7 +94,7 @@ void sendPotentiometer() {
 void sendJoystick() {
   Serial.println("<joystick>");
 
-  int value = analogRead(pin);
+  int value = analogRead(1);
 
   Serial.println("</joystick>");
 }
