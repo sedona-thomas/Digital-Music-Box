@@ -15,40 +15,48 @@ from html.parser import HTMLParser
 class SerialPeripheralParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
-        print("Encountered a start tag:", tag)
+        if "data" not in tag.lower():
+            print("Encountered a start tag:", tag)
 
     def handle_endtag(self, tag):
-        print("Encountered an end tag :", tag)
+        if "data" not in tag.lower():
+            print("Encountered an end tag :", tag)
 
     def handle_data(self, data):
         print("Encountered some data  :", data)
 
 
-class DisplayWithPeripherals():
+class PeripheralTagProcessor(object):
 
-    def __init__():
+    def __init__(self):
+        self.tags = {"data", "button", "potentiometer",
+                     "joystick", "VRx", "VRy", "SW"}
+
+
+class DisplayWithPeripherals(object):
+
+    def __init__(self):
         self.port = '/dev/cu.usbserial-023E564D'  # esp32
         self.baudrate = 115200
-        self.s = serial.Serial(port, baudrate)
+        self.s = serial.Serial(self.port, self.baudrate)
         self.button_val = 0
         self.potentiometer_val = 0
         self.joystick_vals = {"VRx": 0, "VRy": 0, "SW": 0}
         self.parser = SerialPeripheralParser()
 
     def update(self):
-        sensor = s.readline().strip()
-        sensor_str = str(sensor, 'ascii')
-        parser.feed(sensor_str)
+        sensor = str(self.s.readline(), 'ascii').strip()
+        self.parser.feed(sensor)
         return
 
     def get_button(self):
-        return button_val
+        return self.button_val
 
     def get_potentiometer(self):
-        return potentiometer_val
+        return self.potentiometer_val
 
     def get_joystick(self):
-        return joystick_vals
+        return self.joystick_vals
 
 
 if __name__ == "__main__":
