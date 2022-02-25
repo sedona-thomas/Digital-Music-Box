@@ -29,21 +29,21 @@ def get_sensor_value():
 def get_button():
     button = {"-": 0}
     button_pins = {"-": 12}
-    
+
     return button
 
 
 def get_potentiometer():
     potentiometer = {"in": 0, "out": 0, "ground": 0}
     potentiometer_pins = {"out": 13}
-    
+
     return potentiometer
 
 
 def get_joystick():
     joystick = {"ground": 0, "5V": 0, "VRx": 0, "VRy": 0, "SW": 0}
     joystick_pins = {"VRx": 27, "VRy": 26, "SW": 25}
-    
+
     return joystick
 
 # setup
