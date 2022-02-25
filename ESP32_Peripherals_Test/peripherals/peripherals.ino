@@ -4,27 +4,24 @@ bool touch2detected = false;
 uint8_t touch1Val = 0;
 uint8_t touch2Val = 0;
 
+// main
 void setupSerial();
 void readPin(int pin);
+
+// professor Santolucito's
+void setupTest();
+void loopTest();
 void gotTouch1();
 void gotTouch2();
-void test();
 
 
 void setup() {
   setupSerial();
-  test();
+  setupTest();
 }
 
 void loop(){
-  if(touch1detected){
-    touch1detected = false;
-    Serial.println(touch1Val);
-  }
-  if(touch2detected){
-    touch2detected = false;
-    Serial.println(touch2Val);
-  }
+  loopTest();
 }
 
 // setupSerial(): starts serial communication
@@ -39,6 +36,26 @@ void readPin(int pin) {
   Serial.println(pinValue);
 }
 
+
+// professor Santolucito's
+
+void setupTest() {
+  Serial.println("ESP32 Touch Interrupt Test");
+  touchAttachInterrupt(T2, gotTouch1, threshold);
+  touchAttachInterrupt(T9, gotTouch2, threshold);
+}
+
+void loopTest() {
+  if(touch1detected){
+    touch1detected = false;
+    Serial.println(touch1Val);
+  }
+  if(touch2detected){
+    touch2detected = false;
+    Serial.println(touch2Val);
+  }
+}
+
 void gotTouch1() {
  touch1detected = true;
  touch1Val = touchRead(T2);
@@ -47,10 +64,4 @@ void gotTouch1() {
 void gotTouch2() {
  touch2detected = true;
  touch2Val = touchRead(T9);
-}
-
-void test() {
-  Serial.println("ESP32 Touch Interrupt Test");
-  touchAttachInterrupt(T2, gotTouch1, threshold);
-  touchAttachInterrupt(T9, gotTouch2, threshold);
 }
