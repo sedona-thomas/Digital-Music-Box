@@ -1,49 +1,57 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+'''
+    Setup:
+        button = {"+": "3V", "-" : "12"}
+        potentiometer = {"in": "3V", "out": "13", "ground": "G"}
+        joystick = {"ground": "G", "5V": "5V", "VRx": "27", "VRy": "26", "SW": "25"}
+'''
+
 import serial
-
-port = '/dev/cu.usbserial-023E564D'  # esp32
-baudrate = 115200
-
-s = serial.Serial(port, baudrate)
-
-while(True):
-    print(get_sensor_value())
-
-    # button = get_button()
-    # potentiometer = get_potentiometer()
-    # joystick = get_joystick()
-
-    # print("current values:")
-    # print(button)
-    # print(potentiometer)
-    # print(joystick)
+from html.parser import HTMLParser
 
 
-def get_sensor_value():
-    sensor = s.readline().strip()
-    return str(sensor, 'ascii')
+class SerialPeripheralParser(HTMLParser):
+
+    def handle_starttag(self, tag, attrs):
+        print("Encountered a start tag:", tag)
+
+    def handle_endtag(self, tag):
+        print("Encountered an end tag :", tag)
+
+    def handle_data(self, data):
+        print("Encountered some data  :", data)
 
 
-def get_button():
-    button = {"-": 0}
+class DisplayWithPeripherals():
 
-    return button
+    def __init__():
+        self.port = '/dev/cu.usbserial-023E564D'  # esp32
+        self.baudrate = 115200
+        self.s = serial.Serial(port, baudrate)
+        self.button_val = 0
+        self.potentiometer_val = 0
+        self.joystick_vals = {"VRx": 0, "VRy": 0, "SW": 0}
+        self.parser = SerialPeripheralParser()
+
+    def update(self):
+        sensor = s.readline().strip()
+        sensor_str = str(sensor, 'ascii')
+        parser.feed(sensor_str)
+        return
+
+    def get_button(self):
+        return button_val
+
+    def get_potentiometer(self):
+        return potentiometer_val
+
+    def get_joystick(self):
+        return joystick_vals
 
 
-def get_potentiometer():
-    potentiometer = {"in": 0, "out": 0, "ground": 0}
-
-    return potentiometer
-
-
-def get_joystick():
-    joystick = {"ground": 0, "5V": 0, "VRx": 0, "VRy": 0, "SW": 0}
-
-    return joystick
-
-# setup
-# button = {"+": "3V", "-" : "12"}
-# potentiometer = {"in": "3V", "out": "13", "ground": "G"}
-# joystick = {"ground": "G", "5V": "5V", "VRx": "27", "VRy": "26", "SW": "25"}
+if __name__ == "__main__":
+    display = DisplayWithPeripherals()
+    while(True):
+        display.update()
