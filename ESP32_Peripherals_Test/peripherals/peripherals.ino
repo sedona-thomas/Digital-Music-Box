@@ -14,15 +14,12 @@ void loopTest();
 void gotTouch1();
 void gotTouch2();
 
-
 void setup() {
   setupSerial();
   setupTest();
 }
 
-void loop(){
-  loopTest();
-}
+void loop() { loopTest(); }
 
 // setupSerial(): starts serial communication
 void setupSerial() {
@@ -36,7 +33,6 @@ void readPin(int pin) {
   Serial.println(pinValue);
 }
 
-
 // professor Santolucito's
 
 void setupTest() {
@@ -46,22 +42,22 @@ void setupTest() {
 }
 
 void loopTest() {
-  if(touch1detected){
+  if (touch1detected) {
     touch1detected = false;
     Serial.println(touch1Val);
   }
-  if(touch2detected){
+  if (touch2detected) {
     touch2detected = false;
     Serial.println(touch2Val);
   }
 }
 
 void gotTouch1() {
- touch1detected = true;
- touch1Val = touchRead(T2);
+  touch1detected = true;
+  touch1Val = touchRead(T2);
 }
 
 void gotTouch2() {
- touch2detected = true;
- touch2Val = touchRead(T9);
+  touch2detected = true;
+  touch2Val = touchRead(T9);
 }
