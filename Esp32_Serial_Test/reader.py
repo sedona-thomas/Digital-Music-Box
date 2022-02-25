@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''
-  this code will read the touch values from the ESP32 and echo them on the command line
-  you could do something else more interesting with these values (e.g. visualize/sonify)
-  @author Professor Mark Santolucito
-  @link https://gist.github.com/santolucito/44410ed78def1b68b9994b74227f59ee
-'''
-
 import serial
 
-esp32_port = '/dev/cu.usbserial-023E564D'
+port = '/dev/cu.usbserial-023E564D' # esp32
+baudrate = 115200
 
-ser = serial.Serial(esp32_port, 115200)
+s = serial.Serial(port, baudrate)
 
 while(True):
-  print(str(ser.readline().strip(), 'ascii'))
+  get_sensor_value()
+  print()
+
+
+def get_sensor_value():
+  sensor = s.readline().strip()
+  return str(sensor, 'ascii')
 
