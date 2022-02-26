@@ -206,4 +206,3 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
-
