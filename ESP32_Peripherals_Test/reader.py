@@ -29,8 +29,32 @@ class SerialPeripheralParser(HTMLParser):
 class PeripheralTagProcessor(object):
 
     def __init__(self):
-        self.tags = {"data", "button", "potentiometer",
-                     "joystick", "VRx", "VRy", "SW"}
+        self.tags = {"data": self.process_data, "button": self.process_button, "potentiometer": self.process_potentiometer,
+                     "joystick": self.process_joystick, "VRx": self.process_VRx, "VRy": self.process_VRy, "SW": self.process_SW}
+
+    def process_tag(self, tag):
+        self.tags[tag]
+
+    def process_data(self):
+        pass
+
+    def process_button(self):
+        pass
+
+    def process_potentiometer(self):
+        pass
+
+    def process_joystick(self):
+        pass
+
+    def process_VRx(self):
+        pass
+
+    def process_VRy(self):
+        pass
+
+    def process_SW(self):
+        pass
 
 
 class DisplayWithPeripherals(object):
