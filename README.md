@@ -8,6 +8,10 @@
  - button
  - joystick
  - potentiometer
+ - wires
+ - soldering tools
+ - Acrylic sheet
+ - Laser cutter
 
 ## Make at Home
 
@@ -24,25 +28,62 @@
 - Comment out the line that says `#include <User_Setup.h>`
 - Uncomment the line that says `#include <User_Setups/Setup25_TTGO_T_Display.h>`
 
-### Test ESP32 TTGO T-Display
+#### Test ESP32 TTGO T-Display
 
 - Open the Arduino IDE
 - Select `Files > Examples > TFT_eSPI > 160 x 128 > RLE_font_test`
 - Plug in the ESP32 TTGO T-Display
 - Select `Sketch > Upload`
 
-## Setup Python Serial Ports
+#### Setup Python Serial Ports
 
 - Download Anaconda ([https://www.anaconda.com/products/individual](https://www.anaconda.com/products/individual))
 - Open Terminal
 - Download pyserial `conda install pyserial`
 
-## Test ESP32 Inputs
+### Test ESP32 Inputs
 
 - 
 
+### Upload Sensor Program
 
+- 
 
+### Build Hardware
+
+#### Solder Button
+
+- Solder the `+` (voltage in) end of the button to a 3V pin of the ESP32
+- Solder the `-` (voltage out) end of the button to the `GPIO Pin #12` (also known as the `Touch Pin #5`) of the ESP32
+
+#### Solder Potentiometer
+
+- Solder the `V_in` (voltage in, the first pin) end of the potentiometer to a 3V pin of the ESP32
+- Solder the `V_out` (voltage out, the second pin) end of the potentiometer to the `GPIO Pin #13` (also known as the `Touch Pin #4`) of the ESP32
+- Solder the `GND` (ground, the third pin) end of the potentiometer to a ground pin of the ESP32
+
+#### Solder Joystick
+
+- Solder the `GND` (ground, the first pin) end of the potentiometer to a ground pin of the ESP32
+- Solder the `+5V` (voltage in, the second pin) end of the potentiometer to a 5V pin of the ESP32
+- Solder the `VRx` (x-axis potentiometer, the third pin) end of the potentiometer to the `GPIO Pin #27` (also known as the `Touch Pin #7`) of the ESP32
+- Solder the `VRy` (y-axis potentiometer, the fourth pin) end of the potentiometer to the `GPIO Pin #33` (also known as the `Touch Pin #8`) of the ESP32
+- Solder the `SW` (button, the fifth pin) end of the potentiometer to the `GPIO Pin #32` (also known as the `Touch Pin #9`) of the ESP32
+
+### Make Case
+
+## Cut Case
+
+- 
+
+## Assemble Case
+
+- 
+
+### Run Device
+
+- Plug the device into your computer
+- Run `./_______.py`
 
 
 ## More Information
