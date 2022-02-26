@@ -47,7 +47,7 @@
 
 ## More Information
 
-Medium Blog Post: 
+Medium Blog Post: [https://medium.com/@sedonathomas/interactive-device-3c5826457c24](https://medium.com/@sedonathomas/interactive-device-3c5826457c24)
 
 Youtube Demo: 
 
