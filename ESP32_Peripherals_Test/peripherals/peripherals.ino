@@ -156,9 +156,9 @@ void gotTouchJoystickVRy() {
 void sendJoystickVRy() {
   if (joystickSWDetected) {
     joystickSWDetected = false;
-    Serial.print("<SW>");
+    Serial.print("<VRy>");
     Serial.print(joystickSWVal);
-    Serial.print("</SW>");
+    Serial.print("</VRy>");
   }
 }
 
