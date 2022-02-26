@@ -2,7 +2,7 @@
 
 ## Materials
 
- - ESP32 TTGO T-Display
+ - ESP32 TTGO T-Display (CP 2104)
  - Charged 500 mAh battery
  - USB-C cord
  - button
