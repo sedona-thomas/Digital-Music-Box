@@ -3,7 +3,7 @@
 ## Materials
 
  - ESP32 TTGO T-Display (CP 2104)
- - Charged 500 mAh battery
+ - Computer
  - USB-C cord
  - button
  - joystick
