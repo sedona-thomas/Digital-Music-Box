@@ -5,9 +5,9 @@
 // peripherals
 const uint8_t buttonPin = 12;        // T5
 const uint8_t potentiometerPin = 13; // T4
-const uint8_t joystickPinVRx = 27;   // T9
+const uint8_t joystickPinVRx = 27;   // T7
 const uint8_t joystickPinVRy = 33;   // T8
-const uint8_t joystickPinSW = 32;    // T7
+const uint8_t joystickPinSW = 32;    // T9
 
 int threshold = 40;
 
@@ -46,18 +46,19 @@ void setupSerial() {
 void setupPeripherals() {
   touchAttachInterrupt(T5, gotTouchButton, threshold);
   touchAttachInterrupt(T4, gotTouchPotentiometer, threshold);
-  touchAttachInterrupt(T9, gotTouchJoystickVRx, threshold);
+  touchAttachInterrupt(T7, gotTouchJoystickVRx, threshold);
   touchAttachInterrupt(T8, gotTouchJoystickVRy, threshold);
-  touchAttachInterrupt(T7, gotTouchJoystickSW, threshold);
+  touchAttachInterrupt(T9, gotTouchJoystickSW, threshold);
 }
 
 // sendPeripherals(): sends data from peripherals over the serial connection
 void sendPeripherals() {
-  Serial.println("<data>");
+  Serial.print("<data>");
   sendButton();
   sendPotentiometer();
   sendJoystick();
-  Serial.println("</data>");
+  Serial.print("</data>");
+  Serial.println("");
 }
 
 void gotTouchButton() {
@@ -92,9 +93,9 @@ void gotTouchJoystickSW() {
 void sendButton() {
   if (buttonDetected) {
     buttonDetected = false;
-    Serial.println("<button>");
-    Serial.println(buttonVal);
-    Serial.println("</button>");
+    Serial.print("<button>");
+    Serial.print(buttonVal);
+    Serial.print("</button>");
   }
 }
 
@@ -102,9 +103,9 @@ void sendButton() {
 void sendPotentiometer() {
   if (potentiometerDetected) {
     potentiometerDetected = false;
-    Serial.println("<potentiometer>");
-    Serial.println(potentiometerVal);
-    Serial.println("</potentiometer>");
+    Serial.print("<potentiometer>");
+    Serial.print(potentiometerVal);
+    Serial.print("</potentiometer>");
   }
 }
 
@@ -112,26 +113,26 @@ void sendPotentiometer() {
 void sendJoystick() {
   if (joystickDetected) {
     joystickDetected = false;
-    Serial.println("<joystick>");
+    Serial.print("<joystick>");
     if (joystickVRxDetected) {
       joystickVRxDetected = false;
-      Serial.println("<VRx>");
-      Serial.println(joystickVRxVal);
-      Serial.println("</VRx>");
+      Serial.print("<VRx>");
+      Serial.print(joystickVRxVal);
+      Serial.print("</VRx>");
     }
     if (joystickVRyDetected) {
       joystickVRyDetected = false;
-      Serial.println("<VRy>");
-      Serial.println(joystickVRyVal);
-      Serial.println("</VRy>");
+      Serial.print("<VRy>");
+      Serial.print(joystickVRyVal);
+      Serial.print("</VRy>");
     }
     if (joystickSWDetected) {
       joystickSWDetected = false;
-      Serial.println("<SW>");
-      Serial.println(joystickSWVal);
-      Serial.println("</SW>");
+      Serial.print("<SW>");
+      Serial.print(joystickSWVal);
+      Serial.print("</SW>");
     }
-    Serial.println("</joystick>");
+    Serial.print("</joystick>");
   }
 }
 

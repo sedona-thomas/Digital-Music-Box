@@ -30,52 +30,69 @@ class PeripheralTagParser(object):
         self.device = device
 
     def feed(self, text):
-        print("Text:\n", text, "\n")
-        remaining = text
+        self.process_data(text)
+
+    def parse(self, text):
+        text = text.strip()
+        tag, open_tag, close_tag = self.extract_current_tag(text)
+        if tag:
+            data = text[open_tag[1]: close_tag[0]]
+            remaining = text[close_tag[0]:]
+            return tag, data, remaining
+        else:
+            return tag, "", ""
+
+    def extract_current_tag(self, text):
+        open_tag = re.search("<\s*\w*\s*>", text)
+        if open_tag:
+            tag = re.search("\w+", open_tag.group(0))
+            if tag:
+                close_tag = re.search("</\s*" + tag.group(0) + "*\s*>", text)
+                if close_tag:
+                    return tag.group(0), open_tag.span(), close_tag.span()
+        return "", (-1, -1), (-1, -1)
+
+    def process_tag(self, tag, data):
+        if tag in self.tags.keys():
+            self.tags[tag](data)
+
+    def process_data(self, data):
+        remaining = data
+        while remaining:
+            tag, data, remaining = self.parse(remaining)
+            self.process_tag(tag, data)
+
+    def process_button(self, data):
+        if data.strip().isnumeric():
+            self.device.button_val = int(data)
+            print("b", data)
+
+    def process_potentiometer(self, data):
+        if data.strip().isnumeric():
+            self.device.potentiometer_val = int(data)
+            print("p", data)
+
+    def process_joystick(self, data):
+        remaining = data
         while remaining:
             tag, data, remaining = self.parse(remaining)
             if tag:
                 self.process_tag(tag, data)
 
-    def parse(self, text):
-        text = text.strip()
-        tag, open_tag, close_tag = extract_current_tag(self, text)
-        data = text[open_tag[1]: close_tag[0]]
-        remianing = text[close_tag[0]:]
-        return tag, data, remaining
-
-    def extract_current_tag(self, text):
-        open_tag = re.search("<\s*\w*\s*>", text)
-        tag = re.search("\w*", open_tag)
-        close_tag = re.search("<\s*" + tag + "*\s*>", text)
-        return tag, open_tag.span(), close_tag.span() if open_tag and close_tag else "", -1, -1
-
-    def process_tag(self, tag, data):
-        self.tags[tag](data)
-
-    def process_data(self, data):
-        self.parse(data)
-        self.process_tag(tag, data)
-
-    def process_button(self, data):
-        if data:
-            self.device.button_val = int(data)
-
-    def process_potentiometer(self, data):
-        if data:
-            self.device.potentiometer_val = int(data)
-
-    def process_joystick(self, data):
-        pass
-
     def process_VRx(self, data):
-        pass
+        if data.strip().isnumeric():
+            self.device.joystick_vals["VRx"] = int(data)
+            print("VRx", data)
 
     def process_VRy(self, data):
-        pass
+        if data.strip().isnumeric():
+            self.device.joystick_vals["VRy"] = int(data)
+            print("VRy", data)
 
     def process_SW(self, data):
-        pass
+        if data.strip().isnumeric():
+            self.device.joystick_vals["SW"] = int(data)
+            print("SW", data)
 
 
 class DisplayWithPeripherals(object):
