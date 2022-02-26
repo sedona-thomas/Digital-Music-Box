@@ -74,7 +74,7 @@ void gotTouchPotentiometer() {
 void gotTouchJoystickVRx() {
   joystickDetected = true;
   joystickVRxDetected = true;
-  joystickVRxVal = touchRead(T9);
+  joystickVRxVal = touchRead(T7);
 }
 
 void gotTouchJoystickVRy() {
@@ -86,7 +86,7 @@ void gotTouchJoystickVRy() {
 void gotTouchJoystickSW() {
   joystickDetected = true;
   joystickSWDetected = true;
-  joystickSWVal = touchRead(T7);
+  joystickSWVal = touchRead(T9);
 }
 
 // sendButton(): sends in the value of the button
