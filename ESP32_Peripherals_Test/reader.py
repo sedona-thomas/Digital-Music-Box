@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 '''
+
+
+
+
+
     Setup:
         button = {"+": "3V", "-" : "12"}
         potentiometer = {"in": "3V", "out": "13", "ground": "G"}
@@ -9,52 +14,81 @@
 '''
 
 import serial
-from html.parser import HTMLParser
 
 
-class SerialPeripheralParser(HTMLParser):
+class PeripheralTagParser(object):
 
-    def handle_starttag(self, tag, attrs):
-        if "data" not in tag.lower():
-            print("Encountered a start tag:", tag)
+    def __init__(self, device):
+        self.tags = {"data": self.process_data,
+                     "button": self.process_button,
+                     "potentiometer": self.process_potentiometer,
+                     "joystick": self.process_joystick,
+                     "VRx": self.process_VRx,
+                     "VRy": self.process_VRy,
+                     "SW": self.process_SW}
+        self.device = device
 
-    def handle_endtag(self, tag):
-        if "data" not in tag.lower():
-            print("Encountered an end tag :", tag)
+    def feed(self, text):
+        remaining = text
+        while remaining:
+            tag, data, remaining = self.parse(remaining)
+            self.process_tag(tag, data)
 
-    def handle_data(self, data):
-        print("Encountered some data  :", data)
+    def parse(self, text):
+        text = text.strip()
+        if "<" in text:
+            open_tag, close_tag = self.extract_current_tag(text)
+            tag_o = text[open_tag: text[open_tag].find(">")].strip()
+            tag_c = text[close_tag: text[close_tag].find(">")].strip()
+            if (tag_o == tag_c):
+                data = text[text[open_tag].find(">") + 1: close_tag].strip()
+                remaining = text[close_tag:]
+                return tag_o, data, remaining
+            else:
+                print("Open tag doesn't match close tag for", tag, close_tag)
+                return None
+        elif text:
+            print("Information not caught by relevant method, text:", text)
+            return None
 
+    def process_tag(self, tag, data):
+        self.tags[tag](data)
 
-class PeripheralTagProcessor(object):
+    def process_data(self, data):
+        self.parse(data)
+        self.process_tag(tag, data)
 
-    def __init__(self):
-        self.tags = {"data": self.process_data, "button": self.process_button, "potentiometer": self.process_potentiometer,
-                     "joystick": self.process_joystick, "VRx": self.process_VRx, "VRy": self.process_VRy, "SW": self.process_SW}
+    def process_button(self, data):
+        device.button_val = int(data)
 
-    def process_tag(self, tag):
-        self.tags[tag]
+    def process_potentiometer(self, data):
+        device.potentiometer_val = int(data)
 
-    def process_data(self):
+    def process_joystick(self, data):
         pass
 
-    def process_button(self):
+    def process_VRx(self, data):
         pass
 
-    def process_potentiometer(self):
+    def process_VRy(self, data):
         pass
 
-    def process_joystick(self):
+    def process_SW(self, data):
         pass
 
-    def process_VRx(self):
-        pass
-
-    def process_VRy(self):
-        pass
-
-    def process_SW(self):
-        pass
+    def extract_current_tag(self, text):
+        open_tag = text.find("<")
+        tag = text[text.find("<") + 1: text.find(">")].strip()
+        close_tag = -1
+        current_text = text[text.find(">"):]
+        while close_tag == -1:
+            next_close_tag_open = current_text.rfind("</")
+            next_tag = current_text.rfind(tag)
+            if next_close_tag < next_tag:
+                next_close_tag_close = current_text.rfind(">")
+                close_tag = text.find(
+                    current_text[next_close_tag_open: next_close_tag_open + 1])
+        return open_tag, close_tag
 
 
 class DisplayWithPeripherals(object):
@@ -66,7 +100,7 @@ class DisplayWithPeripherals(object):
         self.button_val = 0
         self.potentiometer_val = 0
         self.joystick_vals = {"VRx": 0, "VRy": 0, "SW": 0}
-        self.parser = SerialPeripheralParser()
+        self.parser = PeripheralTagParser(self)
 
     def update(self):
         sensor = str(self.s.readline(), 'ascii').strip()
@@ -87,3 +121,18 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
+
+
+'''
+from html.parser import HTMLParser
+class SerialPeripheralParser(HTMLParser):
+
+    def handle_starttag(self, tag, attrs):
+        print("Encountered a start tag:", tag)
+
+    def handle_endtag(self, tag):
+        print("Encountered an end tag :", tag)
+
+    def handle_data(self, data):
+        print("Encountered some data  :", data)
+'''
