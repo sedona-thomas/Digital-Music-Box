@@ -4,44 +4,55 @@
 
 int threshold = 40;
 
-const uint8_t buttonPin = 12;        // T5
-const uint8_t potentiometerPin = 13; // T4
-const uint8_t joystickPinVRx = 27;   // T7
-const uint8_t joystickPinVRy = 33;   // T8
-const uint8_t joystickPinSW = 32;    // T9
-
-const uint8_t buttonTouchPin = T5;
-const uint8_t potentiometerTouchPin = T4;
-const uint8_t joystickTouchPinVRx = T7;
-const uint8_t joystickTouchPinVRy = T8;
-const uint8_t joystickTouchPinSW = T9;
-
-bool buttonDetected = false;
-bool potentiometerDetected = false;
-bool joystickDetected = false;
-bool joystickVRxDetected = false;
-bool joystickVRyDetected = false;
-bool joystickSWDetected = false;
-
-uint8_t buttonVal = 0;
-uint8_t potentiometerVal = 0;
-uint8_t joystickVRxVal = 0;
-uint8_t joystickVRyVal = 0;
-uint8_t joystickSWVal = 0;
-
 // main
 void setupSerial();
 void setupPeripherals();
 void sendPeripherals();
-void gotTouchButton();
-void gotTouchPotentiometer();
-void gotTouchJoystickVRx();
-void gotTouchJoystickVRy();
-void gotTouchJoystickSW();
-void sendButton();
-void sendPotentiometer();
-void sendJoystick();
 int readPin(int pin);
+
+// button
+const uint8_t buttonPin = 12;
+const uint8_t buttonTouchPin = T5;
+bool buttonDetected = false;
+uint8_t buttonVal = 0;
+void gotTouchButton();
+void sendButton();
+
+// potentiometer
+const uint8_t potentiometerPin = 13;
+const uint8_t potentiometerTouchPin = T4;
+bool potentiometerDetected = false;
+uint8_t potentiometerVal = 0;
+void sendPotentiometer();
+void gotTouchPotentiometer();
+
+// joystick
+bool joystickDetected = false;
+void sendJoystick();
+
+// joystick x
+const uint8_t joystickPinVRx = 27;
+const uint8_t joystickTouchPinVRx = T7;
+bool joystickVRxDetected = false;
+uint8_t joystickVRxVal = 0;
+void gotTouchJoystickVRx();
+void sendJoystickVRx();
+
+// joystick y
+const uint8_t joystickPinVRy = 33;
+const uint8_t joystickTouchPinVRy = T8;
+bool joystickVRyDetected = false;
+uint8_t joystickVRyVal = 0;
+void gotTouchJoystickVRy();
+void sendJoystickVRy();
+
+// joystick button
+const uint8_t joystickPinSW = 32;
+const uint8_t joystickTouchPinSW = T9;
+bool joystickSWDetected = false;
+uint8_t joystickSWVal = 0;
+void gotTouchJoystickSW();
+void sendJoystickSW();
 
 void setup() { setupSerial(); }
 
@@ -79,33 +90,6 @@ void gotTouchButton() {
   buttonVal = touchRead(buttonTouchPin);
 }
 
-// gotTouchPotentiometer(): updates potentiometer value
-void gotTouchPotentiometer() {
-  potentiometerDetected = true;
-  potentiometerVal = touchRead(potentiometerTouchPin);
-}
-
-// gotTouchJoystickVRx(): updates joystick x value
-void gotTouchJoystickVRx() {
-  joystickDetected = true;
-  joystickVRxDetected = true;
-  joystickVRxVal = touchRead(joystickTouchPinVRx);
-}
-
-// gotTouchJoystickVRy(): updates joystick y value
-void gotTouchJoystickVRy() {
-  joystickDetected = true;
-  joystickVRyDetected = true;
-  joystickVRyVal = touchRead(joystickTouchPinVRy);
-}
-
-// gotTouchJoystickSW(): updates joystick button value
-void gotTouchJoystickSW() {
-  joystickDetected = true;
-  joystickSWDetected = true;
-  joystickSWVal = touchRead(joystickTouchPinSW);
-}
-
 // sendButton(): sends in the value of the button
 void sendButton() {
   if (buttonDetected) {
@@ -114,6 +98,12 @@ void sendButton() {
     Serial.print(buttonVal);
     Serial.print("</button>");
   }
+}
+
+// gotTouchPotentiometer(): updates potentiometer value
+void gotTouchPotentiometer() {
+  potentiometerDetected = true;
+  potentiometerVal = touchRead(potentiometerTouchPin);
 }
 
 // sendPotentiometer(): sends in the value of the potentiometer
@@ -131,25 +121,61 @@ void sendJoystick() {
   if (joystickDetected) {
     joystickDetected = false;
     Serial.print("<joystick>");
-    if (joystickVRxDetected) {
-      joystickVRxDetected = false;
-      Serial.print("<VRx>");
-      Serial.print(joystickVRxVal);
-      Serial.print("</VRx>");
-    }
-    if (joystickVRyDetected) {
-      joystickVRyDetected = false;
-      Serial.print("<VRy>");
-      Serial.print(joystickVRyVal);
-      Serial.print("</VRy>");
-    }
-    if (joystickSWDetected) {
-      joystickSWDetected = false;
-      Serial.print("<SW>");
-      Serial.print(joystickSWVal);
-      Serial.print("</SW>");
-    }
+    sendJoystickVRx();
+    sendJoystickVRy();
+    sendJoystickSW();
     Serial.print("</joystick>");
+  }
+}
+
+// gotTouchJoystickVRx(): updates joystick x value
+void gotTouchJoystickVRx() {
+  joystickDetected = true;
+  joystickVRxDetected = true;
+  joystickVRxVal = touchRead(joystickTouchPinVRx);
+}
+
+// sendJoystickVRx(): sends in the value of the joystick x direction
+void sendJoystickVRx() {
+  if (joystickVRxDetected) {
+    joystickVRxDetected = false;
+    Serial.print("<VRx>");
+    Serial.print(joystickVRxVal);
+    Serial.print("</VRx>");
+  }
+}
+
+// gotTouchJoystickVRy(): updates joystick y value
+void gotTouchJoystickVRy() {
+  joystickDetected = true;
+  joystickVRyDetected = true;
+  joystickVRyVal = touchRead(joystickTouchPinVRy);
+}
+
+// sendJoystickVRy(): sends in the value of the joystick y direction
+void sendJoystickVRy() {
+  if (joystickSWDetected) {
+    joystickSWDetected = false;
+    Serial.print("<SW>");
+    Serial.print(joystickSWVal);
+    Serial.print("</SW>");
+  }
+}
+
+// gotTouchJoystickSW(): updates joystick button value
+void gotTouchJoystickSW() {
+  joystickDetected = true;
+  joystickSWDetected = true;
+  joystickSWVal = touchRead(joystickTouchPinSW);
+}
+
+// sendJoystickSW(): sends in the value of the joystick button
+void sendJoystickSW() {
+  if (joystickSWDetected) {
+    joystickSWDetected = false;
+    Serial.print("<SW>");
+    Serial.print(joystickSWVal);
+    Serial.print("</SW>");
   }
 }
 
