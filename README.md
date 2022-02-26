@@ -31,7 +31,7 @@
 - Plug in the ESP32 TTGO T-Display
 - Select `Sketch > Upload`
 
-## Setup ESP32 Inputs
+## Setup Python Serial Ports
 
 - Download Anaconda ([https://www.anaconda.com/products/individual](https://www.anaconda.com/products/individual))
 - Open Terminal
