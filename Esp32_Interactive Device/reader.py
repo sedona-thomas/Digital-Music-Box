@@ -21,13 +21,7 @@ class PeripheralTagParser(object):
         @param device the object for which to update values
     """
    def __init__(self, device):
-        self.tags = {"data": self.process_data,
-                     "button": self.process_button,
-                     "potentiometer": self.process_potentiometer,
-                     "joystick": self.process_joystick,
-                     "VRx": self.process_VRx,
-                     "VRy": self.process_VRy,
-                     "SW": self.process_SW}
+        self.tags = ["data"] + list(device.values.keys())
         self.device = device
 
     """
@@ -70,15 +64,6 @@ class PeripheralTagParser(object):
                     return tag.group(0), open_tag.span(), close_tag.span()
         return "", (-1, -1), (-1, -1)
 
-    """
-        Executes the proper function for the current tag
-
-        @param tag the tag associated with the data
-        @param data the data contained in the tag
-    """
-    def process_tag(self, tag, data):
-        if tag in self.tags.keys():
-            self.tags[tag](data)
 
     """
         Processes the data contained within the <data> tag
@@ -92,66 +77,15 @@ class PeripheralTagParser(object):
             self.process_tag(tag, data)
 
     """
-        Processes the data contained within the <button> tag
+        Processes the data contained within the given tag
 
-        @param data the data within the <button> tag
+        @param data the data within the given tag
     """
-    def process_button(self, data):
+    def process_tag(self, tag, data):
         if data.strip().isnumeric():
-            self.device.button_val = int(data)
-            print("b", data)
+            self.device.values[tag] = int(data)
+            print(tag, data)
 
-    """
-        Processes the data contained within the <potentiometer> tag
-
-        @param data the data within the <potentiometer> tag
-    """
-    def process_potentiometer(self, data):
-        if data.strip().isnumeric():
-            self.device.potentiometer_val = int(data)
-            print("p", data)
-
-    """
-        Processes the data contained within the <joystickr> tag
-
-        @param data the data within the <joystick> tag
-    """
-    def process_joystick(self, data):
-        remaining = data
-        while remaining:
-            tag, data, remaining = self.parse(remaining)
-            if tag:
-                self.process_tag(tag, data)
-
-    """
-        Processes the data contained within the <VRx> tag
-
-        @param data the data within the <VRx> tag
-    """
-    def process_VRx(self, data):
-        if data.strip().isnumeric():
-            self.device.joystick_vals["VRx"] = int(data)
-            print("VRx", data)
-
-    """
-        Processes the data contained within the <VRy> tag
-
-        @param data the data within the <VRy> tag
-    """
-    def process_VRy(self, data):
-        if data.strip().isnumeric():
-            self.device.joystick_vals["VRy"] = int(data)
-            print("VRy", data)
-
-    """
-        Processes the data contained within the <SW> tag
-
-        @param data the data within the <SW> tag
-    """
-    def process_SW(self, data):
-        if data.strip().isnumeric():
-            self.device.joystick_vals["SW"] = int(data)
-            print("SW", data)
 
 
 class DisplayWithPeripherals(object):
@@ -165,9 +99,7 @@ class DisplayWithPeripherals(object):
         self.port = '/dev/cu.usbserial-023E564D'  # esp32
         self.baudrate = 115200
         self.s = serial.Serial(self.port, self.baudrate)
-        self.button_val = 0
-        self.potentiometer_val = 0
-        self.joystick_vals = {"VRx": 0, "VRy": 0, "SW": 0}
+        self.values = {"button": 0, "potentiometer": 0, "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
         self.parser = PeripheralTagParser(self)
 
     """
@@ -206,3 +138,77 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
+
+
+
+
+'''
+
+self.tags = {"data": self.process_data,
+                     "button": self.process_button,
+                     "potentiometer": self.process_potentiometer,
+                     "joystickVRx": self.process_joystickVRx,
+                     "joystickVRy": self.process_joystickVRy,
+                     "joystickSW": self.process_joystickSW}
+
+    """
+        Executes the proper function for the current tag
+
+        @param tag the tag associated with the data
+        @param data the data contained in the tag
+    """
+    def process_tag(self, tag, data):
+        if tag in self.tags.keys():
+            self.tags[tag](data)
+
+
+    """
+        Processes the data contained within the <button> tag
+
+        @param data the data within the <button> tag
+    """
+    def process_button(self, data):
+        if data.strip().isnumeric():
+            self.device.values["button"] = int(data)
+            print("b", data)
+
+    """
+        Processes the data contained within the <potentiometer> tag
+
+        @param data the data within the <potentiometer> tag
+    """
+    def process_potentiometer(self, data):
+        if data.strip().isnumeric():
+            self.device.values["potentiometer"] = int(data)
+            print("p", data)
+
+    """
+        Processes the data contained within the <joystickVRx> tag
+
+        @param data the data within the <joystickVRx> tag
+    """
+    def process_joystickVRx(self, data):
+        if data.strip().isnumeric():
+            self.device.values["joystickVRx"] = int(data)
+            print("joystickVRx", data)
+
+    """
+        Processes the data contained within the <joystickVRy> tag
+
+        @param data the data within the <joystickVRy> tag
+    """
+    def process_VRy(self, data):
+        if data.strip().isnumeric():
+            self.device.values["joystickVRy"] = int(data)
+            print("joystickVRy", data)
+
+    """
+        Processes the data contained within the <joystickSW> tag
+
+        @param data the data within the <joystickSW> tag
+    """
+    def process_SW(self, data):
+        if data.strip().isnumeric():
+            self.device.values["joystickSW"] = int(data)
+            print("joystickSW", data)
+'''
