@@ -32,9 +32,9 @@ void Peripheral::read() {
 void Button::send() {
   if (detected) {
     detected = false;
-    Serial.print("<button" + name + ">");
+    Serial.print("<button_" + name + ">");
     Serial.print(value);
-    Serial.print("</button" + name + ">");
+    Serial.print("</button_" + name + ">");
   }
 };
 
@@ -67,9 +67,9 @@ void Potentiometer::read() {
 void Potentiometer::send() {
   if (detected) {
     detected = false;
-    Serial.print("<potentiometer" + name + ">");
+    Serial.print("<potentiometer_" + name + ">");
     Serial.print(value);
-    Serial.print("</potentiometer" + name + ">");
+    Serial.print("</potentiometer_" + name + ">");
   }
 };
 
@@ -101,11 +101,11 @@ void Joystick::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Joystick::send() {
-  Serial.print("<joystick" + name + ">");
+  Serial.print("<joystick_" + name + ">");
   potentiometerX.send();
   potentiometerY.send();
   buttonSW.send();
-  Serial.print("</joystick" + name + ">");
+  Serial.print("</joystick_" + name + ">");
 };
 
 Button button;
