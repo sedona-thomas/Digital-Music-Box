@@ -4,6 +4,7 @@
 
 class Button {
 public:
+  std::string name;
   const uint8_t pin;
   bool detected;
   uint8_t value;
@@ -13,7 +14,8 @@ public:
   void send();
 };
 
-Button(int _pin) {
+Button(std::string _name, int _pin) {
+  name = _name;
   pin = _pin;
   detected = false;
   value = 0;
@@ -30,14 +32,15 @@ void Peripheral::read() {
 void Button::send() {
   if (detected) {
     detected = false;
-    Serial.print("<button>");
+    Serial.print("<button" + name + ">");
     Serial.print(value);
-    Serial.print("</button>");
+    Serial.print("</button" + name + ">");
   }
 };
 
 class Potentiometer {
 public:
+  std::string name;
   const uint8_t pin;
   bool detected;
   uint8_t value;
@@ -47,7 +50,8 @@ public:
   void send();
 };
 
-Potentiometer(int _pin) {
+Potentiometer(std::string _name, int _pin) {
+  name = _name;
   pin = _pin;
   detected = false;
   value = 0;
@@ -63,14 +67,15 @@ void Potentiometer::read() {
 void Potentiometer::send() {
   if (detected) {
     detected = false;
-    Serial.print("<potentiometer>");
+    Serial.print("<potentiometer" + name + ">");
     Serial.print(value);
-    Serial.print("</potentiometer>");
+    Serial.print("</potentiometer" + name + ">");
   }
 };
 
 class Joystick {
 public:
+  std::string name;
   Potentiometer potentiometerX;
   Potentiometer potentiometerY;
   Button buttonSW;
@@ -81,6 +86,7 @@ public:
 };
 
 Joystick(std::string _name, int _pinX, int _pinY, int _pinSW) {
+  name = _name;
   potentiometerX = Potentiometer(_pinX);
   potentiometerY = Potentiometer(_pinY);
   buttonSW = Button(_pinSW);
@@ -95,11 +101,11 @@ void Joystick::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Joystick::send() {
-  Serial.print("<joystick>");
+  Serial.print("<joystick" + name + ">");
   potentiometerX.send();
   potentiometerY.send();
   buttonSW.send();
-  Serial.print("</joystick>");
+  Serial.print("</joystick" + name + ">");
 };
 
 Button button;
