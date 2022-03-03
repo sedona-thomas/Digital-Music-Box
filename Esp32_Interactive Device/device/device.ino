@@ -121,9 +121,9 @@ void setupSerial() {
 
 // setupPeripherals(): sets up connections to all peripherals
 void setupPeripherals() {
-  button = Button(37);
-  potentiometer = Potentiometer(12);
-  joystick = Joystick(27, 26, 25);
+  button = Button("button1", 37);
+  potentiometer = Potentiometer("potentiometer1", 12);
+  joystick = Joystick("joystick1", 27, 26, 25);
 }
 
 // sendPeripherals(): sends values of all peripherals
