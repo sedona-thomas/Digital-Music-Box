@@ -64,7 +64,6 @@ class PeripheralTagParser(object):
                     return tag.group(0), open_tag.span(), close_tag.span()
         return "", (-1, -1), (-1, -1)
 
-
     """
         Processes the data contained within the <data> tag
 
@@ -138,77 +137,3 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
-
-
-
-
-'''
-
-self.tags = {"data": self.process_data,
-                     "button": self.process_button,
-                     "potentiometer": self.process_potentiometer,
-                     "joystickVRx": self.process_joystickVRx,
-                     "joystickVRy": self.process_joystickVRy,
-                     "joystickSW": self.process_joystickSW}
-
-    """
-        Executes the proper function for the current tag
-
-        @param tag the tag associated with the data
-        @param data the data contained in the tag
-    """
-    def process_tag(self, tag, data):
-        if tag in self.tags.keys():
-            self.tags[tag](data)
-
-
-    """
-        Processes the data contained within the <button> tag
-
-        @param data the data within the <button> tag
-    """
-    def process_button(self, data):
-        if data.strip().isnumeric():
-            self.device.values["button"] = int(data)
-            print("b", data)
-
-    """
-        Processes the data contained within the <potentiometer> tag
-
-        @param data the data within the <potentiometer> tag
-    """
-    def process_potentiometer(self, data):
-        if data.strip().isnumeric():
-            self.device.values["potentiometer"] = int(data)
-            print("p", data)
-
-    """
-        Processes the data contained within the <joystickVRx> tag
-
-        @param data the data within the <joystickVRx> tag
-    """
-    def process_joystickVRx(self, data):
-        if data.strip().isnumeric():
-            self.device.values["joystickVRx"] = int(data)
-            print("joystickVRx", data)
-
-    """
-        Processes the data contained within the <joystickVRy> tag
-
-        @param data the data within the <joystickVRy> tag
-    """
-    def process_VRy(self, data):
-        if data.strip().isnumeric():
-            self.device.values["joystickVRy"] = int(data)
-            print("joystickVRy", data)
-
-    """
-        Processes the data contained within the <joystickSW> tag
-
-        @param data the data within the <joystickSW> tag
-    """
-    def process_SW(self, data):
-        if data.strip().isnumeric():
-            self.device.values["joystickSW"] = int(data)
-            print("joystickSW", data)
-'''
