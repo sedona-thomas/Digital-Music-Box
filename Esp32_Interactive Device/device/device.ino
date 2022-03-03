@@ -102,19 +102,9 @@ void Joystick::send() {
   Serial.print("</joystick>");
 };
 
-/*
- * main code
- */
-
-int threshold = 40;
-
-void setupSerial();
-void setupPeripherals();
-int readPin(int pin);
-
-void setup() { setupSerial(); }
-
-void loop() { sendPeripherals(); }
+Button button;
+Potentiometer potentiometer;
+Joystick joystick;
 
 // setupSerial(): starts serial communication
 void setupSerial() {
@@ -125,9 +115,17 @@ void setupSerial() {
 
 // setupPeripherals(): sets up connections to all peripherals
 void setupPeripherals() {
-  Peripheral button = Peripheral("button", 37);
-  Peripheral potentiometer = Peripheral("potentiometer", 12);
-  Peripheral joystickVRx = Peripheral("joystickVRx", 27);
-  Peripheral joystickVRy = Peripheral("joystickVRy", 26);
-  Peripheral joystickSW = Peripheral("joystickSW", 25);
+  button = Button(37);
+  potentiometer = Potentiometer(12);
+  joystick = Joystick(27, 26, 25);
 }
+
+// sendPeripherals(): sends values of all peripherals
+void setupPeripherals() {
+  button.send();
+  potentiometer.send();
+  joystick.send();
+}
+
+void setup() { setupSerial(); }
+void loop() { sendPeripherals(); }
