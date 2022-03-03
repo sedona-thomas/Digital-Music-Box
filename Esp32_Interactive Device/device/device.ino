@@ -125,12 +125,9 @@ void setupSerial() {
 
 // setupPeripherals(): sets up connections to all peripherals
 void setupPeripherals() {
-  Peripheral button = Peripheral("button", 12);
-  Peripheral potentiometer = Peripheral("potentiometer", 13);
+  Peripheral button = Peripheral("button", 37);
+  Peripheral potentiometer = Peripheral("potentiometer", 12);
   Peripheral joystickVRx = Peripheral("joystickVRx", 27);
-  Peripheral joystickVRy = Peripheral("joystickVRy", 33);
-  Peripheral joystickSW = Peripheral("joystickSW", 32);
+  Peripheral joystickVRy = Peripheral("joystickVRy", 26);
+  Peripheral joystickSW = Peripheral("joystickSW", 25);
 }
-
-// readPin(): reads in the value of the specified pin
-int readPin(int pin) { return analogRead(pin); }
