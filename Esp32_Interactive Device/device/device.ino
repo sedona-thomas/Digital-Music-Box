@@ -15,12 +15,12 @@ public:
   void send();
 };
 
-Button(std::string _name, int _pin) {
+Button(std::string _name, int _pin, bool _json) {
   name = _name;
   pin = _pin;
   detected = false;
   value = 0;
-  json = true;
+  json = _json;
 }
 
 // read(): reads button value
@@ -59,12 +59,12 @@ public:
   void send();
 };
 
-Potentiometer(std::string _name, int _pin) {
+Potentiometer(std::string _name, int _pin, bool _json) {
   name = _name;
   pin = _pin;
   detected = false;
   value = 0;
-  json = true;
+  json = _json;
 }
 
 // read(): reads potentiometer value
@@ -102,12 +102,12 @@ public:
   void send();
 };
 
-Joystick(std::string _name, int _pinX, int _pinY, int _pinSW) {
+Joystick(std::string _name, int _pinX, int _pinY, int _pinSW, bool _json) {
   name = _name;
   potentiometerX = Potentiometer(name, _pinX);
   potentiometerY = Potentiometer(name, _pinY);
   buttonSW = Button(name, _pinSW);
-  json = true;
+  json = _json;
 }
 
 // read(): reads joystick value
@@ -145,9 +145,10 @@ void setupSerial() {
 
 // setupPeripherals(): sets up connections to all peripherals
 void setupPeripherals() {
-  button = Button("button1", 37);
-  potentiometer = Potentiometer("potentiometer1", 12);
-  joystick = Joystick("joystick1", 27, 26, 25);
+  bool json = false;
+  button = Button("button1", 37, json);
+  potentiometer = Potentiometer("potentiometer1", 12, json);
+  joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
 // sendPeripherals(): sends values of all peripherals
