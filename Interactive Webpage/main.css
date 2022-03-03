@@ -1,0 +1,70 @@
+/* 
+ * Interactive Device Formatting
+ *
+ * @author Sedona Thomas
+ */
+
+body
+{
+    background-color: #FFFFFF; 
+    margin: 3%;
+    border: 0%;
+    padding: 0%;
+    font-family: "Times New Roman", Times, serif;
+    text-align: left;
+    font-size: 17px;
+    color: #000000;
+}
+
+h1 { font-size: 50px; }
+
+h2 { font-size: 40px; }
+
+h3 { font-size: 25px; }
+
+h4 { font-size: 20px; }
+
+ul { list-style-type: none; }
+
+#dot_list { list-style-type: disc; }
+
+#dashed_list { list-style-type: '- '; }
+
+hr {
+    background-color: #000000;
+    display: block; 
+    height: 1px;
+    border: 0; 
+    border-top: 1px solid #3333FF;
+    margin: 1em 0; 
+    padding: 0; 
+}
+
+#nav {
+    width: 99%;
+    border: solid 1px #3333FF;
+    background-color: #FFFFFF;
+    padding: 1%;
+    margin: 0%;
+}
+
+#nav a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#nav a:hover {
+    color:#003DF5;
+}
+
+#nav ul {
+    text-align: center;
+    margin: 0px;
+    list-style-type: none;
+}
+
+#nav ul li {
+    display: inline;
+    margin: 0px 10px;
+}
