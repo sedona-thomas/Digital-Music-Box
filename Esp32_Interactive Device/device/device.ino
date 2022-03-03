@@ -121,8 +121,9 @@ void Joystick::read() {
 void Joystick::send() {
   if (json) {
     Serial.print("joystick_" + name + ": ");
+    Serial.print("{");
     Serial.print(value);
-    Serial.print(",");
+    Serial.print("},");
   } else {
     Serial.print("<joystick_" + name + ">");
     potentiometerX.send();
