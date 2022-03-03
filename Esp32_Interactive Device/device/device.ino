@@ -37,6 +37,7 @@ void Button::send() {
     if (json) {
       Serial.print("button_" + name + ": ");
       Serial.print(value);
+      Serial.print(",");
     } else {
       Serial.print("<button_" + name + ">");
       Serial.print(value);
@@ -79,6 +80,7 @@ void Potentiometer::send() {
     if (json) {
       Serial.print("potentiometer_" + name + ": ");
       Serial.print(value);
+      Serial.print(",");
     } else {
       Serial.print("<potentiometer_" + name + ">");
       Serial.print(value);
@@ -120,6 +122,7 @@ void Joystick::send() {
   if (json) {
     Serial.print("joystick_" + name + ": ");
     Serial.print(value);
+    Serial.print(",");
   } else {
     Serial.print("<joystick_" + name + ">");
     potentiometerX.send();
@@ -149,9 +152,11 @@ void setupPeripherals() {
 
 // sendPeripherals(): sends values of all peripherals
 void setupPeripherals() {
+  Serial.print("{");
   button.send();
   potentiometer.send();
   joystick.send();
+  Serial.print("}");
 }
 
 void setup() { setupSerial(); }
