@@ -16,7 +16,7 @@ document.addEventListener('click', async () => {
 });
 
 // setupPort(): asks user to select port
-function setupPort() {
+async function setupPort() {
     var port = await navigator.serial.requestPort();
     await port.open({ baudRate: esp32BaudRate });
 }
