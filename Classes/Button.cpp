@@ -1,5 +1,6 @@
 class Button {
 public:
+  std::string name;
   const uint8_t pin;
   bool detected;
   uint8_t value;
@@ -9,7 +10,8 @@ public:
   void send();
 };
 
-Button(int _pin) {
+Button(std::string _name, int _pin) {
+  name = _name;
   pin = _pin;
   detected = false;
   value = 0;
@@ -26,8 +28,8 @@ void Peripheral::read() {
 void Button::send() {
   if (detected) {
     detected = false;
-    Serial.print("<button>");
+    Serial.print("<button_" + name + ">");
     Serial.print(value);
-    Serial.print("</button>");
+    Serial.print("</button_" + name + ">");
   }
 };
