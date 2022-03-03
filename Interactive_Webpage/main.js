@@ -41,9 +41,9 @@ async function readLoop() {
             break;
         }
         if (value) {
-            parsedVal = parseValue(value);
-            if (!isNaN(parsedVal)) {
-                counterVal += parseInt(value) / 100.0;
+            data = parseValue(value);
+            if (!isNaN(data)) {
+                counterVal += data / 100.0;
                 changeBackgroundColor(counterVal);
             }
         }
@@ -69,7 +69,7 @@ function parseTags(value) {
 
 // parseJSON(): parses input as JSON format
 function parseJSON(value) {
-    return JSON.parse(value);
+    return JSON.parse(value)["data"];
 }
 
 // changeBackgroundColor(): updates the background color for current counter value
