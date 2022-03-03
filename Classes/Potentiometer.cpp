@@ -1,5 +1,6 @@
 class Potentiometer {
 public:
+  std::string name;
   const uint8_t pin;
   bool detected;
   uint8_t value;
@@ -9,7 +10,8 @@ public:
   void send();
 };
 
-Potentiometer(int _pin) {
+Potentiometer(std::string _name, int _pin) {
+  name = _name;
   pin = _pin;
   detected = false;
   value = 0;
@@ -25,8 +27,8 @@ void Potentiometer::read() {
 void Potentiometer::send() {
   if (detected) {
     detected = false;
-    Serial.print("<potentiometer>");
+    Serial.print("<potentiometer_" + name + ">");
     Serial.print(value);
-    Serial.print("</potentiometer>");
+    Serial.print("</potentiometer_" + name + ">");
   }
 };
