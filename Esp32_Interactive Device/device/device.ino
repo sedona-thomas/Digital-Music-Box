@@ -8,6 +8,7 @@ public:
   const uint8_t pin;
   bool detected;
   uint8_t value;
+  bool json;
 
   Button(std::string, int);
   void read();
@@ -19,6 +20,7 @@ Button(std::string _name, int _pin) {
   pin = _pin;
   detected = false;
   value = 0;
+  json = true;
 }
 
 // read(): reads button value
@@ -32,9 +34,14 @@ void Peripheral::read() {
 void Button::send() {
   if (detected) {
     detected = false;
-    Serial.print("<button_" + name + ">");
-    Serial.print(value);
-    Serial.print("</button_" + name + ">");
+    if (json) {
+      Serial.print("button_" + name + ": ");
+      Serial.print(value);
+    } else {
+      Serial.print("<button_" + name + ">");
+      Serial.print(value);
+      Serial.print("</button_" + name + ">");
+    }
   }
 };
 
@@ -44,6 +51,7 @@ public:
   const uint8_t pin;
   bool detected;
   uint8_t value;
+  bool json;
 
   Button(std::string, int);
   void read();
@@ -55,6 +63,7 @@ Potentiometer(std::string _name, int _pin) {
   pin = _pin;
   detected = false;
   value = 0;
+  json = true;
 }
 
 // read(): reads potentiometer value
@@ -67,9 +76,14 @@ void Potentiometer::read() {
 void Potentiometer::send() {
   if (detected) {
     detected = false;
-    Serial.print("<potentiometer_" + name + ">");
-    Serial.print(value);
-    Serial.print("</potentiometer_" + name + ">");
+    if (json) {
+      Serial.print("potentiometer_" + name + ": ");
+      Serial.print(value);
+    } else {
+      Serial.print("<potentiometer_" + name + ">");
+      Serial.print(value);
+      Serial.print("</potentiometer_" + name + ">");
+    }
   }
 };
 
@@ -79,6 +93,7 @@ public:
   Potentiometer potentiometerX;
   Potentiometer potentiometerY;
   Button buttonSW;
+  bool json;
 
   Button(std::string, int);
   void read();
@@ -87,9 +102,10 @@ public:
 
 Joystick(std::string _name, int _pinX, int _pinY, int _pinSW) {
   name = _name;
-  potentiometerX = Potentiometer(_pinX);
-  potentiometerY = Potentiometer(_pinY);
-  buttonSW = Button(_pinSW);
+  potentiometerX = Potentiometer(name, _pinX);
+  potentiometerY = Potentiometer(name, _pinY);
+  buttonSW = Button(name, _pinSW);
+  json = true;
 }
 
 // read(): reads joystick value
@@ -101,11 +117,16 @@ void Joystick::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Joystick::send() {
-  Serial.print("<joystick_" + name + ">");
-  potentiometerX.send();
-  potentiometerY.send();
-  buttonSW.send();
-  Serial.print("</joystick_" + name + ">");
+  if (json) {
+    Serial.print("joystick_" + name + ": ");
+    Serial.print(value);
+  } else {
+    Serial.print("<joystick_" + name + ">");
+    potentiometerX.send();
+    potentiometerY.send();
+    buttonSW.send();
+    Serial.print("</joystick_" + name + ">");
+  }
 };
 
 Button button;
