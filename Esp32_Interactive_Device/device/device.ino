@@ -45,17 +45,17 @@ void Button::send() {
     detected = false;
     if (json) {
       Serial.print("button_");
-      Serial.print(name);
+      Serial.print(name.c_str());
       Serial.print(": ");
       Serial.print(value);
       Serial.print(",");
     } else {
       Serial.print("<button_");
-      Serial.print(name);
+      Serial.print(name.c_str());
       Serial.print(">");
       Serial.print(value);
       Serial.print("</button_");
-      Serial.print(name);
+      Serial.print(name.c_str());
       Serial.print(">");
     }
   }
@@ -104,7 +104,7 @@ void Potentiometer::send() {
     if (json) {
       if (name.length > 0) {
         Serial.print("potentiometer_");
-        Serial.print(name);
+        Serial.print(name.c_str());
         Serial.print(": ");
         Serial.print(value);
         Serial.print(",");
@@ -116,11 +116,11 @@ void Potentiometer::send() {
     } else {
       if (name.length > 0) {
         Serial.print("<potentiometer_");
-        Serial.print(name);
+        Serial.print(name.c_str());
         Serial.print(">");
         Serial.print(value);
         Serial.print("</potentiometer_");
-        Serial.print(name);
+        Serial.print(name.c_str());
         Serial.print(">");
       } else {
         Serial.print("<potentiometer>");
@@ -164,20 +164,20 @@ void Joystick::read() {
 void Joystick::send() {
   if (json) {
     Serial.print("joystick_");
-    Serial.print(name);
+    Serial.print(name.c_str());
     Serial.print(": ");
     Serial.print("{");
     Serial.print(value);
     Serial.print("},");
   } else {
     Serial.print("<joystick_");
-    Serial.print(name);
+    Serial.print(name.c_str());
     Serial.print(">");
     potentiometerX.send();
     potentiometerY.send();
     buttonSW.send();
     Serial.print("</joystick_");
-    Serial.print(name);
+    Serial.print(name.c_str());
     Serial.print(">");
   }
 };
