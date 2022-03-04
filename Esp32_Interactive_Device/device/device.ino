@@ -229,8 +229,8 @@ void setupSerial() {
 void setupPeripherals() {
   bool json = false;
   button = Button("button1", 37, json);
-  potentiometer = Potentiometer("potentiometer1", 12, json);
-  joystick = Joystick("joystick1", 27, 26, 25, json);
+  // potentiometer = Potentiometer("potentiometer1", 12, json);
+  // joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
 // updateScreen(): updates current screen
