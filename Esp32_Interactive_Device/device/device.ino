@@ -16,20 +16,20 @@ public:
   void send();
 };
 
-Button(std::string _name, int _pin, bool _json) {
-  name = _name;
-  pin = _pin;
+Button::Button(std::string name_in, int pin_in, bool json_in) {
+  name = name_in;
+  pin = pin_in;
   detected = false;
   value = 0;
-  json = _json;
+  json = json_in;
 }
 
-Button(int _pin, bool _json) {
+Button(int pin_in, bool json_in) {
   name = "";
-  pin = _pin;
+  pin = pin_in;
   detected = false;
   value = 0;
-  json = _json;
+  json = json_in;
 }
 
 // read(): reads button value
@@ -69,20 +69,20 @@ public:
   void send();
 };
 
-Potentiometer(std::string _name, int _pin, bool _json) {
-  name = _name;
-  pin = _pin;
+Potentiometer(std::string name_in, int pin_in, bool json_in) {
+  name = name_in;
+  pin = pin_in;
   detected = false;
   value = 0;
-  json = _json;
+  json = json_in;
 }
 
-Potentiometer(int _pin, bool _json) {
+Potentiometer(int pin_in, bool json_in) {
   name = "";
-  pin = _pin;
+  pin = pin_in;
   detected = false;
   value = 0;
-  json = _json;
+  json = json_in;
 }
 
 // read(): reads potentiometer value
@@ -132,12 +132,12 @@ public:
   void send();
 };
 
-Joystick(std::string _name, int _pinX, int _pinY, int _pinSW, bool _json) {
-  name = _name;
-  potentiometerX = Potentiometer(_pinX);
-  potentiometerY = Potentiometer(_pinY);
-  buttonSW = Button(_pinSW);
-  json = _json;
+Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW, bool json_in) {
+  name = name_in;
+  potentiometerX = Potentiometer(pin_X);
+  potentiometerY = Potentiometer(pin_Y);
+  buttonSW = Button(pin_SW);
+  json = json_in;
 }
 
 // read(): reads joystick value
