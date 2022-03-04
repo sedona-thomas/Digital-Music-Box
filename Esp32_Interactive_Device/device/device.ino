@@ -10,6 +10,7 @@ public:
   uint8_t value;
   bool json;
 
+  Button() {}
   Button(std::string, int, bool);
   Button(int, bool);
   void read();
@@ -69,6 +70,7 @@ public:
   uint8_t value;
   bool json;
 
+  Potentiometer() {}
   Potentiometer(std::string, int, bool);
   Potentiometer(int, bool);
   void read();
@@ -139,6 +141,7 @@ public:
   Button buttonSW;
   bool json;
 
+  Joystick() {}
   Joystick(std::string, int, int, int, bool);
   void read();
   void send();
