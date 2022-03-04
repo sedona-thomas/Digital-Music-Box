@@ -44,13 +44,19 @@ void Button::send() {
   if (detected) {
     detected = false;
     if (json) {
-      Serial.print("button_" + name + ": ");
+      Serial.print("button_");
+      Serial.print(name);
+      Serial.print(": ");
       Serial.print(value);
       Serial.print(",");
     } else {
-      Serial.print("<button_" + name + ">");
+      Serial.print("<button_");
+      Serial.print(name);
+      Serial.print(">");
       Serial.print(value);
-      Serial.print("</button_" + name + ">");
+      Serial.print("</button_");
+      Serial.print(name);
+      Serial.print(">");
     }
   }
 };
@@ -97,7 +103,9 @@ void Potentiometer::send() {
     detected = false;
     if (json) {
       if (name.length > 0) {
-        Serial.print("potentiometer_" + name + ": ");
+        Serial.print("potentiometer_");
+        Serial.print(name);
+        Serial.print(": ");
         Serial.print(value);
         Serial.print(",");
       } else {
@@ -107,9 +115,13 @@ void Potentiometer::send() {
       }
     } else {
       if (name.length > 0) {
-        Serial.print("<potentiometer_" + name + ">");
+        Serial.print("<potentiometer_");
+        Serial.print(name);
+        Serial.print(">");
         Serial.print(value);
-        Serial.print("</potentiometer_" + name + ">");
+        Serial.print("</potentiometer_");
+        Serial.print(name);
+        Serial.print(">");
       } else {
         Serial.print("<potentiometer>");
         Serial.print(value);
@@ -151,16 +163,22 @@ void Joystick::read() {
 // send(): sends data from peripheral over the serial connection
 void Joystick::send() {
   if (json) {
-    Serial.print("joystick_" + name + ": ");
+    Serial.print("joystick_");
+    Serial.print(name);
+    Serial.print(": ");
     Serial.print("{");
     Serial.print(value);
     Serial.print("},");
   } else {
-    Serial.print("<joystick_" + name + ">");
+    Serial.print("<joystick_");
+    Serial.print(name);
+    Serial.print(">");
     potentiometerX.send();
     potentiometerY.send();
     buttonSW.send();
-    Serial.print("</joystick_" + name + ">");
+    Serial.print("</joystick_");
+    Serial.print(name);
+    Serial.print(">");
   }
 };
 
@@ -229,7 +247,7 @@ void sendPeripherals() {
   button.send();
   potentiometer.send();
   joystick.send();
-  Serial.print("}");
+  Serial.println("}");
 }
 
 // resetScreen(): resets the background and text color/size of the display
