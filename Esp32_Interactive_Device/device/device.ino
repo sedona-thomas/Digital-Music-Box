@@ -163,9 +163,41 @@ void Joystick::send() {
   }
 };
 
+  /*
+   * Main Code
+   */
+
+#define WAIT 500      // miliseconds
+#define FRAMERATE 100 // miliseconds
+
+#include <SPI.h>
+#include <TFT_eSPI.h>
+#include <stdint.h>
+TFT_eSPI tft = TFT_eSPI();
+
+uint32_t currentBackgroundColor = TFT_WHITE;
+uint32_t currentTextColor = TFT_BLACK;
+uint8_t currentTextSize = 1; // 10 pixels
+
+byte red = 31;
+byte green = 0;
+byte blue = 0;
+byte state = 0;
+unsigned int colour = red << 11;
+
+unsigned long startTime = 0;
+unsigned long loopStartTime = 0; // Used for testing draw times
+
 Button button;
 Potentiometer potentiometer;
 Joystick joystick;
+
+// setupScreen(): starts ESP32 screen
+void setupScreen() {
+  tft.init();
+  tft.setRotation(1);
+  startTime = millis();
+}
 
 // setupSerial(): starts serial communication
 void setupSerial() {
@@ -182,8 +214,16 @@ void setupPeripherals() {
   joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
+// updateScreen(): updates current screen
+void updateScreen() {
+  loopStartTime = millis();
+  resetScreen();
+  tft.println("Hello World!");
+  delay(FRAMERATE);
+}
+
 // sendPeripherals(): sends values of all peripherals
-void setupPeripherals() {
+void sendPeripherals() {
   Serial.print("{ data:");
   button.send();
   potentiometer.send();
@@ -191,5 +231,93 @@ void setupPeripherals() {
   Serial.print("}");
 }
 
-void setup() { setupSerial(); }
-void loop() { sendPeripherals(); }
+// resetScreen(): resets the background and text color/size of the display
+void resetScreen() {
+  tft.setTextSize(currentTextSize);
+  tft.fillScreen(currentBackgroundColor);
+  tft.setTextColor(currentTextColor);
+  tft.setCursor(0, 0, currentTextSize);
+}
+
+// getLetterVector(): turns a std::string into an Arduino String vector
+std::vector<String> getLetterVector(std::string str) {
+  std::vector<String> letters;
+  for (int i = 0; i < str.size(); i++) {
+    letters.push_back(String(str[i]));
+  }
+  return letters;
+}
+
+// randomColor(): outputs a random pastel color that can be used for a
+// background
+inline uint16_t randomColor() {
+  return getRGB(random(0, 255) / 2, random(0, 255) / 2, random(0, 255) / 2);
+}
+
+// getRGB(): converts an RGB value to an Arduino color value
+// https://stackoverflow.com/questions/13720937/c-defined-16bit-high-color
+inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b) {
+  return ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+}
+
+// rainbowBackground(): makes the background a scrolling rainbow gradient
+void rainbowBackground() {
+  for (int i = 0; i < tft.width(); i++) {
+    tft.drawFastVLine(i, 0, tft.height(), colour);
+    switch (state) {
+    case 0:
+      green += 2;
+      if (green == 64) {
+        green = 63;
+        state = 1;
+      }
+      break;
+    case 1:
+      red--;
+      if (red == 255) {
+        red = 0;
+        state = 2;
+      }
+      break;
+    case 2:
+      blue++;
+      if (blue == 32) {
+        blue = 31;
+        state = 3;
+      }
+      break;
+    case 3:
+      green -= 2;
+      if (green == 255) {
+        green = 0;
+        state = 4;
+      }
+      break;
+    case 4:
+      red++;
+      if (red == 32) {
+        red = 31;
+        state = 5;
+      }
+      break;
+    case 5:
+      blue--;
+      if (blue == 255) {
+        blue = 0;
+        state = 0;
+      }
+      break;
+    }
+    colour = red << 11 | green << 5 | blue;
+  }
+}
+
+void setup() {
+  setupScreen();
+  setupSerial();
+}
+
+void loop() {
+  updateScreen();
+  sendPeripherals();
+}
