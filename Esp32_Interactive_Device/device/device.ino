@@ -102,7 +102,7 @@ void Potentiometer::send() {
   if (detected) {
     detected = false;
     if (json) {
-      if (name.length > 0) {
+      if (name.length() > 0) {
         Serial.print("potentiometer_");
         Serial.print(name.c_str());
         Serial.print(": ");
@@ -114,7 +114,7 @@ void Potentiometer::send() {
         Serial.print(",");
       }
     } else {
-      if (name.length > 0) {
+      if (name.length() > 0) {
         Serial.print("<potentiometer_");
         Serial.print(name.c_str());
         Serial.print(">");
