@@ -5,7 +5,7 @@
 class Button {
 public:
   std::string name;
-  const uint8_t pin;
+  uint8_t pin;
   bool detected;
   uint8_t value;
   bool json;
@@ -24,7 +24,7 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
   json = json_in;
 }
 
-Button(int pin_in, bool json_in) {
+Button::Button(int pin_in, bool json_in) {
   name = "";
   pin = pin_in;
   detected = false;
@@ -33,7 +33,7 @@ Button(int pin_in, bool json_in) {
 }
 
 // read(): reads button value
-void Peripheral::read() {
+void Button::read() {
   detected = true;
   pinMode(pin, INPUT_PULLUP);
   digitalRead(pin);
@@ -58,18 +58,18 @@ void Button::send() {
 class Potentiometer {
 public:
   std::string name;
-  const uint8_t pin;
+  uint8_t pin;
   bool detected;
   uint8_t value;
   bool json;
 
-  Button(std::string, int, bool);
-  Button(int, bool);
+  Potentiometer(std::string, int, bool);
+  Potentiometer(int, bool);
   void read();
   void send();
 };
 
-Potentiometer(std::string name_in, int pin_in, bool json_in) {
+Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
   detected = false;
@@ -77,7 +77,7 @@ Potentiometer(std::string name_in, int pin_in, bool json_in) {
   json = json_in;
 }
 
-Potentiometer(int pin_in, bool json_in) {
+Potentiometer::Potentiometer(int pin_in, bool json_in) {
   name = "";
   pin = pin_in;
   detected = false;
@@ -132,7 +132,8 @@ public:
   void send();
 };
 
-Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW, bool json_in) {
+Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
+                   bool json_in) {
   name = name_in;
   potentiometerX = Potentiometer(pin_X);
   potentiometerY = Potentiometer(pin_Y);
