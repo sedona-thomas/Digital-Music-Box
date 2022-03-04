@@ -139,7 +139,7 @@ public:
   Button buttonSW;
   bool json;
 
-  Joystick(std::string, int);
+  Joystick(std::string, int, int, int, bool);
   void read();
   void send();
 };
