@@ -147,9 +147,9 @@ public:
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
   name = name_in;
-  potentiometerX = Potentiometer(pin_X);
-  potentiometerY = Potentiometer(pin_Y);
-  buttonSW = Button(pin_SW);
+  potentiometerX = Potentiometer(pin_X, json_in);
+  potentiometerY = Potentiometer(pin_Y, json_in);
+  buttonSW = Button(pin_SW, json_in);
   json = json_in;
 }
 
