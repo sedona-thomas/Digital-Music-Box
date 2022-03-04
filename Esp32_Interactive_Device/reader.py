@@ -16,27 +16,29 @@ import re
 class PeripheralTagParser(object):
 
     """
-        The PeripheralTagParser parses sensor data inputted as HTML tags for special tag names
+    The PeripheralTagParser parses sensor data inputted as HTML tags for special tag names
 
-        @param device the object for which to update values
+    :param :device the object for which to update values
+    :returns: returns nothing
     """
    def __init__(self, device):
         self.tags = ["data"] + list(device.values.keys())
         self.device = device
 
     """
-        Feeds in a string to be parsed
+    Feeds in a string to be parsed
 
-        @param text the string with tags
+    :param :text the string with tags
+    :returns: returns nothing
     """
     def feed(self, text):
         self.process_data(text)
 
     """
-        Parses a string with tags
+    Parses a string with tags
 
-        @param text the string with tags
-        @return tag, data within tag, remaining string to process
+    :param :text the string with tags
+    :returns: returns tag, data within tag, remaining string to process
     """
     def parse(self, text):
         text = text.strip()
@@ -49,10 +51,10 @@ class PeripheralTagParser(object):
             return tag, "", ""
 
     """
-        Extracts the next tag and returns its start and end positions
+    Extracts the next tag and returns its start and end positions
 
-        @param text the string with tags
-        @return tag as string, span of opening tag, span of closing tag
+    :param :text the string with tags
+    :returns: returns tag as string, span of opening tag, span of closing tag
     """
     def extract_current_tag(self, text):
         open_tag = re.search("<\s*\w*\s*>", text)
@@ -65,9 +67,10 @@ class PeripheralTagParser(object):
         return "", (-1, -1), (-1, -1)
 
     """
-        Processes the data contained within the <data> tag
+    Processes the data contained within the <data> tag
 
-        @param data the data within the <data> tag
+    :param :data the data within the <data> tag
+    :returns: returns nothing
     """
     def process_data(self, data):
         remaining = data
@@ -76,9 +79,10 @@ class PeripheralTagParser(object):
             self.process_tag(tag, data)
 
     """
-        Processes the data contained within the given tag
+    Processes the data contained within the given tag
 
-        @param data the data within the given tag
+    :param :data the data within the given tag
+    :returns: returns nothing
     """
     def process_tag(self, tag, data):
         if data.strip().isnumeric():
@@ -90,9 +94,9 @@ class PeripheralTagParser(object):
 class DisplayWithPeripherals(object):
 
     """
-        The DisplayWithPeripherals tracks and updates sensor values for an ESP32 with peripherals
+    The DisplayWithPeripherals tracks and updates sensor values for an ESP32 with peripherals
 
-        @param device the object for which to update values
+    :returns: returns nothing
     """
     def __init__(self):
         self.port = '/dev/cu.usbserial-023E564D'  # esp32
@@ -102,32 +106,34 @@ class DisplayWithPeripherals(object):
         self.parser = PeripheralTagParser(self)
 
     """
-        Updates the current sensor values
+    Updates the current sensor values
+
+    :returns: returns nothing
     """
     def update(self):
         sensor = str(self.s.readline(), 'ascii').strip()
         self.parser.feed(sensor)
 
     """
-        Returns the current button value
+    Returns the current button value
 
-        @return current button value
+    :returns: returns current button value
     """
     def get_button(self):
         return self.button_val
 
     """
-        Returns the current potentiometer value
+    Returns the current potentiometer value
 
-        @return current potentiometer value
+    :returns: returns current potentiometer value
     """
     def get_potentiometer(self):
         return self.potentiometer_val
 
     """
-        Returns the current joystick values
+    Returns the current joystick values
 
-        @return current joystick values
+    :returns: returns current joystick values
     """
     def get_joystick(self):
         return self.joystick_vals
