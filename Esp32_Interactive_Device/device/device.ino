@@ -170,7 +170,9 @@ void Joystick::send() {
     Serial.print(name.c_str());
     Serial.print(": ");
     Serial.print("{");
-    Serial.print(value);
+    potentiometerX.send();
+    potentiometerY.send();
+    buttonSW.send();
     Serial.print("},");
   } else {
     Serial.print("<joystick_");
