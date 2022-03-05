@@ -2,8 +2,10 @@
  *
  */
 
-#define DISPLAY_VALUES // defined: sensors; not defined: rainbow background
-#define JSON // sends JSON data instead of tagged data over serial connection
+#define DISPLAY_VALUES true // defined: sensors; not defined: rainbow background
+#define JSON true           // sends JSON data over serial connection not tagged
+#define WAIT 500            // miliseconds
+#define FRAMERATE 50        // miliseconds
 
 #include "helper.h"
 #include <SPI.h>
@@ -12,12 +14,10 @@
 #include <stdint.h>
 #include <string>
 
-#define WAIT 500     // miliseconds
-#define FRAMERATE 50 // miliseconds
-
 TFT_eSPI tft = TFT_eSPI();
 uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
 uint8_t currentTextSize = 1; // 10 pixels
+unsigned long startTime = 0, loopStartTime = 0;
 
 /*
  * Sensor Classes: contols various sensors
@@ -64,7 +64,7 @@ void Button::read() {
   values.push_back(digitalRead(pin));
   values.pop_front();
   value = (std::find(values.begin(), values.end(), 1) != values.end());
-#ifdef DISPLAY_VALUES
+#if DISPLAY_VALUES
   tft.println("button");
   tft.println(value);
 #endif
@@ -134,7 +134,7 @@ void Potentiometer::read() {
     sum += val;
   }
   value = sum / values.size();
-#ifdef DISPLAY_VALUES
+#if DISPLAY_VALUES
   tft.println("potentiometer");
   tft.println(value);
 #endif
@@ -197,7 +197,7 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
 
 // read(): reads joystick value
 void Joystick::read() {
-#ifdef DISPLAY_VALUES
+#if DISPLAY_VALUES
   tft.println("joystick");
 #endif
   potentiometerX.read();
@@ -233,40 +233,9 @@ void Joystick::send() {
  * Main Code: runs Esp32 setup and loop
  */
 
-unsigned long startTime = 0, loopStartTime = 0;
-
-#ifdef JSON
-bool json = true;
-#else
-bool json = false;
-#endif
-
-Button button = Button("button1", 37, json);
-Potentiometer potentiometer = Potentiometer("potentiometer1", 12, json);
-Joystick joystick = Joystick("joystick1", 27, 26, 25, json);
-
-void setupScreen();
-void setupSerial();
-void sendPeripherals();
-void updateScreen();
-
-void setup() {
-  setupScreen();
-  setupSerial();
-}
-
-void loop() {
-  updateScreen();
-  sendPeripherals();
-  delay(FRAMERATE);
-}
-
-// setupScreen(): starts ESP32 screen
-void setupScreen() {
-  tft.init();
-  tft.setRotation(2);
-  startTime = millis();
-}
+Button button = Button("button1", 37, JSON);
+Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
+Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
 
 // setupSerial(): starts serial communication
 void setupSerial() {
@@ -291,11 +260,15 @@ void sendPeripherals() {
   }
 }
 
-// updateScreen(): updates current screen
-void updateScreen() {
+void setup() {
+  startTime = millis();
+  setupScreen(tft);
+  setupSerial();
+}
+
+void loop() {
   loopStartTime = millis();
-  resetScreen(tft);
-#ifndef DISPLAY_VALUES
-  rainbowBackground(tft);
-#endif
+  updateScreen(tft, DISPLAY_VALUES);
+  sendPeripherals();
+  delay(FRAMERATE);
 }

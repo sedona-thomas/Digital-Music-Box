@@ -1,11 +1,25 @@
 #include "helper.h"
 
+// setupScreen(): starts ESP32 screen
+void setupScreen(TFT_eSPI tft) {
+  tft.init();
+  tft.setRotation(2);
+}
+
 // resetScreen(): resets the background and text color/size of the display
 void resetScreen(TFT_eSPI tft) {
   tft.setTextSize(currentTextSize);
   tft.fillScreen(currentBackgroundColor);
   tft.setTextColor(currentTextColor);
   tft.setCursor(0, 0, currentTextSize);
+}
+
+// updateScreen(): updates current screen
+void updateScreen(TFT_eSPI tft, bool display_values) {
+  resetScreen(tft);
+  if (!display_values) {
+    rainbowBackground(tft);
+  }
 }
 
 // getLetterVector(): turns a std::string into an Arduino String vector
