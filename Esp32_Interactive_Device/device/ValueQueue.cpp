@@ -21,8 +21,8 @@ inline void ValueQueue::push(uint8_t value) { values.push_back(value); }
 
 inline void ValueQueue::pop() { values.pop_front(); }
 
-inline uint8_t ValueQueue::contains(int i) {
-  return (std::find(values.begin(), values.end(), i) != values.end());
+bool ValueQueue::contains(uint8_t i) {
+  return std::find(values.begin(), values.end(), i) != values.end();
 }
 
 uint8_t ValueQueue::average() {

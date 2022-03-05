@@ -26,11 +26,12 @@ class SerialCommunication {
 protected:
   std::string name;
   bool json;
-  virtual void send() { Serial.print(value); };
+  virtual void send(){};
 };
 
 class Button : public Sensor, public SerialCommunication {
 public:
+  Button(){};
   Button(std::string, int, bool);
   Button(int, bool);
   void read();
@@ -39,6 +40,7 @@ public:
 
 class Potentiometer : public Sensor, public SerialCommunication {
 public:
+  Potentiometer(){};
   Potentiometer(std::string, int, bool);
   Potentiometer(int, bool);
   void read();
@@ -47,6 +49,7 @@ public:
 
 class Joystick : public SerialCommunication {
 public:
+  Joystick(){};
   Joystick(std::string, int, int, int, bool);
   void send();
 
@@ -213,6 +216,8 @@ void Potentiometer::send() {
     }
   }
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
