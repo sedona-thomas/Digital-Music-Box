@@ -243,7 +243,7 @@ void setupSerial() {
 
 // sendPeripherals(): sends values of all peripherals
 void sendPeripherals() {
-  if (json) {
+  if (JSON) {
     Serial.print("{ data:");
     button.send();
     potentiometer.send();
