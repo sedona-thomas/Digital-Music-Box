@@ -1,6 +1,11 @@
 #ifndef __VALUE_QUEUE_H__
 #define __VALUE_QUEUE_H__
 
+#include <cstdlib>
+#include <list>
+#include <stdint.h>
+#include <string>
+
 class ValueQueue {
 private:
   std::list<uint8_t> values;

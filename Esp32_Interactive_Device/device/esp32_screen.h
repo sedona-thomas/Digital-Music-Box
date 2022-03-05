@@ -3,7 +3,6 @@
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
-#include <list>
 #include <stdint.h>
 #include <string>
 

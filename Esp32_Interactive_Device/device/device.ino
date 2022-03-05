@@ -6,8 +6,8 @@
 #define DISPLAY_VALUES true // defined: sensors; not defined: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
 
+#include "ValueQueue.h"
 #include "esp32_screen.h"
-#include "value_queue.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
