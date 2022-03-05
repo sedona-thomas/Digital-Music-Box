@@ -11,12 +11,13 @@
 
 import serial
 import re
+from collections import defaultdict
 
 
-class PeripheralTagParser(object):
+class TagParser(object):
 
     """
-    The PeripheralTagParser parses sensor data inputted as HTML tags for special tag names
+    The TagParser parses sensor data inputted as HTML tags for special tag names
 
     :param :device the object for which to update values
     :returns: returns nothing
@@ -35,6 +36,19 @@ class PeripheralTagParser(object):
 
     def feed(self, text):
         self.process_data(text)
+
+    """
+    Processes the data contained within the next tag
+
+    :param :data the text data within the next tag
+    :returns: returns nothing
+    """
+
+    def process_data(self, data):
+        remaining = data
+        while remaining:
+            tag, data, remaining = self.parse(remaining)
+            self.process_tag(tag, data)
 
     """
     Parses a string with tags
@@ -71,19 +85,6 @@ class PeripheralTagParser(object):
         return "", (-1, -1), (-1, -1)
 
     """
-    Processes the data contained within the <data> tag
-
-    :param :data the data within the <data> tag
-    :returns: returns nothing
-    """
-
-    def process_data(self, data):
-        remaining = data
-        while remaining:
-            tag, data, remaining = self.parse(remaining)
-            self.process_tag(tag, data)
-
-    """
     Processes the data contained within the given tag
 
     :param :data the data within the given tag
@@ -91,9 +92,12 @@ class PeripheralTagParser(object):
     """
 
     def process_tag(self, tag, data):
+        print("here", data)
         if data.strip().isnumeric():
             self.device.values[tag] = int(data)
             print(tag, data)
+        else:
+            self.process_data(data)
 
 
 class DisplayWithPeripherals(object):
@@ -108,9 +112,9 @@ class DisplayWithPeripherals(object):
         self.port = '/dev/cu.usbserial-023E564D'  # esp32
         self.baudrate = 115200
         self.s = serial.Serial(self.port, self.baudrate)
-        self.values = {"button": 0, "potentiometer": 0,
-                       "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
-        self.parser = PeripheralTagParser(self)
+        self.values = defaultdict(int)
+        #{"button": 0, "potentiometer": 0, "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
+        self.parser = TagParser(self)
 
     """
     Updates the current sensor values
@@ -155,5 +159,5 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
-        # print(display.values)
+        print(display.values)
         print()
