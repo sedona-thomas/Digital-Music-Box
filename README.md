@@ -53,7 +53,7 @@
 
 #### Solder Button
 
-- Solder the `+` (voltage in) end of the button to a 3V pin of the ESP32
+- Solder the `+` (voltage in) end of the button to a ground pin of the ESP32
 - Solder the `-` (voltage out) end of the button to the `GPIO Pin #37` of the ESP32
 
 #### Solder Potentiometer
