@@ -21,7 +21,8 @@ class PeripheralTagParser(object):
     :param :device the object for which to update values
     :returns: returns nothing
     """
-   def __init__(self, device):
+
+    def __init__(self, device):
         self.tags = ["data"] + list(device.values.keys())
         self.device = device
 
@@ -31,6 +32,7 @@ class PeripheralTagParser(object):
     :param :text the string with tags
     :returns: returns nothing
     """
+
     def feed(self, text):
         self.process_data(text)
 
@@ -40,6 +42,7 @@ class PeripheralTagParser(object):
     :param :text the string with tags
     :returns: returns tag, data within tag, remaining string to process
     """
+
     def parse(self, text):
         text = text.strip()
         tag, open_tag, close_tag = self.extract_current_tag(text)
@@ -56,6 +59,7 @@ class PeripheralTagParser(object):
     :param :text the string with tags
     :returns: returns tag as string, span of opening tag, span of closing tag
     """
+
     def extract_current_tag(self, text):
         open_tag = re.search("<\s*\w*\s*>", text)
         if open_tag:
@@ -72,6 +76,7 @@ class PeripheralTagParser(object):
     :param :data the data within the <data> tag
     :returns: returns nothing
     """
+
     def process_data(self, data):
         remaining = data
         while remaining:
@@ -84,11 +89,11 @@ class PeripheralTagParser(object):
     :param :data the data within the given tag
     :returns: returns nothing
     """
+
     def process_tag(self, tag, data):
         if data.strip().isnumeric():
             self.device.values[tag] = int(data)
             print(tag, data)
-
 
 
 class DisplayWithPeripherals(object):
@@ -98,11 +103,13 @@ class DisplayWithPeripherals(object):
 
     :returns: returns nothing
     """
+
     def __init__(self):
         self.port = '/dev/cu.usbserial-023E564D'  # esp32
         self.baudrate = 115200
         self.s = serial.Serial(self.port, self.baudrate)
-        self.values = {"button": 0, "potentiometer": 0, "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
+        self.values = {"button": 0, "potentiometer": 0,
+                       "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
         self.parser = PeripheralTagParser(self)
 
     """
@@ -110,8 +117,10 @@ class DisplayWithPeripherals(object):
 
     :returns: returns nothing
     """
+
     def update(self):
         sensor = str(self.s.readline(), 'ascii').strip()
+        print(sensor)
         self.parser.feed(sensor)
 
     """
@@ -119,6 +128,7 @@ class DisplayWithPeripherals(object):
 
     :returns: returns current button value
     """
+
     def get_button(self):
         return self.button_val
 
@@ -127,6 +137,7 @@ class DisplayWithPeripherals(object):
 
     :returns: returns current potentiometer value
     """
+
     def get_potentiometer(self):
         return self.potentiometer_val
 
@@ -135,6 +146,7 @@ class DisplayWithPeripherals(object):
 
     :returns: returns current joystick values
     """
+
     def get_joystick(self):
         return self.joystick_vals
 
@@ -143,3 +155,4 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
+        print(display.values)

@@ -6,7 +6,6 @@ class Button {
 public:
   std::string name;
   uint8_t pin;
-  bool detected;
   uint8_t value;
   bool json;
 
@@ -20,7 +19,6 @@ public:
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
-  detected = false;
   value = 0;
   json = json_in;
 }
@@ -28,37 +26,32 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
 Button::Button(int pin_in, bool json_in) {
   name = "";
   pin = pin_in;
-  detected = false;
   value = 0;
   json = json_in;
 }
 
 // read(): reads button value
 void Button::read() {
-  detected = true;
   pinMode(pin, INPUT_PULLUP);
   digitalRead(pin);
 };
 
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
-  if (detected) {
-    detected = false;
-    if (json) {
-      Serial.print("button_");
-      Serial.print(name.c_str());
-      Serial.print(": ");
-      Serial.print(value);
-      Serial.print(",");
-    } else {
-      Serial.print("<button_");
-      Serial.print(name.c_str());
-      Serial.print(">");
-      Serial.print(value);
-      Serial.print("</button_");
-      Serial.print(name.c_str());
-      Serial.print(">");
-    }
+  if (json) {
+    Serial.print("button_");
+    Serial.print(name.c_str());
+    Serial.print(": ");
+    Serial.print(value);
+    Serial.print(",");
+  } else {
+    Serial.print("<button_");
+    Serial.print(name.c_str());
+    Serial.print(">");
+    Serial.print(value);
+    Serial.print("</button_");
+    Serial.print(name.c_str());
+    Serial.print(">");
   }
 };
 
@@ -66,7 +59,6 @@ class Potentiometer {
 public:
   std::string name;
   uint8_t pin;
-  bool detected;
   uint8_t value;
   bool json;
 
@@ -80,7 +72,6 @@ public:
 Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
-  detected = false;
   value = 0;
   json = json_in;
 }
@@ -88,47 +79,40 @@ Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
 Potentiometer::Potentiometer(int pin_in, bool json_in) {
   name = "";
   pin = pin_in;
-  detected = false;
   value = 0;
   json = json_in;
 }
 
 // read(): reads potentiometer value
-void Potentiometer::read() {
-  detected = true;
-  analogRead(pin);
-};
+void Potentiometer::read() { analogRead(pin); };
 
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
-  if (detected) {
-    detected = false;
-    if (json) {
-      if (name.length() > 0) {
-        Serial.print("potentiometer_");
-        Serial.print(name.c_str());
-        Serial.print(": ");
-        Serial.print(value);
-        Serial.print(",");
-      } else {
-        Serial.print("potentiometer: ");
-        Serial.print(value);
-        Serial.print(",");
-      }
+  if (json) {
+    if (name.length() > 0) {
+      Serial.print("potentiometer_");
+      Serial.print(name.c_str());
+      Serial.print(": ");
+      Serial.print(value);
+      Serial.print(",");
     } else {
-      if (name.length() > 0) {
-        Serial.print("<potentiometer_");
-        Serial.print(name.c_str());
-        Serial.print(">");
-        Serial.print(value);
-        Serial.print("</potentiometer_");
-        Serial.print(name.c_str());
-        Serial.print(">");
-      } else {
-        Serial.print("<potentiometer>");
-        Serial.print(value);
-        Serial.print("</potentiometer>");
-      }
+      Serial.print("potentiometer: ");
+      Serial.print(value);
+      Serial.print(",");
+    }
+  } else {
+    if (name.length() > 0) {
+      Serial.print("<potentiometer_");
+      Serial.print(name.c_str());
+      Serial.print(">");
+      Serial.print(value);
+      Serial.print("</potentiometer_");
+      Serial.print(name.c_str());
+      Serial.print(">");
+    } else {
+      Serial.print("<potentiometer>");
+      Serial.print(value);
+      Serial.print("</potentiometer>");
     }
   }
 };
@@ -234,15 +218,18 @@ void setupSerial() {
 void setupPeripherals() {
   bool json = false;
   button = Button("button1", 37, json);
-  // potentiometer = Potentiometer("potentiometer1", 12, json);
-  // joystick = Joystick("joystick1", 27, 26, 25, json);
+  potentiometer = Potentiometer("potentiometer1", 12, json);
+  joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
 // updateScreen(): updates current screen
 void updateScreen() {
   loopStartTime = millis();
   resetScreen();
-  tft.println("Hello World!");
+  tft.println("running");
+  rainbowBackground();
+  // tft.println("button: ");
+  // tft.println(button.value);
   delay(FRAMERATE);
 }
 
