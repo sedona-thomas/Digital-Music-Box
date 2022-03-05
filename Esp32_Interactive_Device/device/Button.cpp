@@ -2,6 +2,8 @@
  * Button.cpp: Button class methods
  */
 
+#include "Button.h"
+
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
