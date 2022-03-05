@@ -1,13 +1,17 @@
 #include "esp32_screen.h"
 
+TFT_eSPI tft = TFT_eSPI();
+uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
+uint8_t currentTextSize = 1; // 10 pixels
+
 // setupScreen(): starts ESP32 screen
-void setupScreen(TFT_eSPI tft) {
+void setupScreen() {
   tft.init();
   tft.setRotation(2);
 }
 
 // resetScreen(): resets the background and text color/size of the display
-void resetScreen(TFT_eSPI tft) {
+void resetScreen() {
   tft.setTextSize(currentTextSize);
   tft.fillScreen(currentBackgroundColor);
   tft.setTextColor(currentTextColor);
@@ -15,12 +19,24 @@ void resetScreen(TFT_eSPI tft) {
 }
 
 // updateScreen(): updates current screen
-void updateScreen(TFT_eSPI tft, bool display_values) {
+void updateScreen(bool display_values) {
   resetScreen(tft);
   if (!display_values) {
     rainbowBackground(tft);
   }
 }
+
+// printToScreen(): prints string to the Esp32 screen
+void printToScreen(std::string s) { tft.println(getArduinoString(s)); }
+
+// printSensorToScreen(): prints a sensor value to the Esp32 screen
+void printSensorToScreen(std::string name, uint8_t value) {
+  tft.println(getArduinoString(name));
+  tft.println(value);
+}
+
+// getArduinoString(): turns a std::string into an Arduino String
+String getArduinoString(std::string str) { return (String)std.c_str(); }
 
 // getLetterVector(): turns a std::string into an Arduino String vector
 std::vector<String> getLetterVector(std::string str) {
@@ -43,7 +59,7 @@ inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 // rainbowBackground(): makes the background a scrolling rainbow gradient
-void rainbowBackground(TFT_eSPI tft) {
+void rainbowBackground() {
   byte red = 31, green = 0, blue = 0, state = 0;
   unsigned int colour = red << 11;
   for (int i = 0; i < tft.width(); i++) {

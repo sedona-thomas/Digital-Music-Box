@@ -7,15 +7,18 @@
 #include <stdint.h>
 #include <string>
 
-uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
-uint8_t currentTextSize = 1; // 10 pixels
+#define WAIT 500     // miliseconds
+#define FRAMERATE 50 // miliseconds
 
-void setupScreen(TFT_eSPI tft);
-void resetScreen(TFT_eSPI tft);
-void updateScreen(TFT_eSPI tft, bool display_values);
+void setupScreen();
+void resetScreen();
+void updateScreen(bool display_values);
+void printToScreen(std::string s);
+void printSensorToScreen(std::string name, uint8_t value);
+String getArduinoString(std::string str);
 std::vector<String> getLetterVector(std::string str);
 inline uint16_t randomColor();
 inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b);
-void rainbowBackground(TFT_eSPI tft);
+void rainbowBackground();
 
 #endif

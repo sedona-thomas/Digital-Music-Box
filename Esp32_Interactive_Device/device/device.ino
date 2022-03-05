@@ -4,8 +4,6 @@
 
 #define DISPLAY_VALUES true // defined: sensors; not defined: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
-#define WAIT 500            // miliseconds
-#define FRAMERATE 50        // miliseconds
 
 #include "esp32_screen.h"
 #include <SPI.h>
@@ -14,7 +12,6 @@
 #include <stdint.h>
 #include <string>
 
-TFT_eSPI tft = TFT_eSPI();
 unsigned long startTime = 0, loopStartTime = 0;
 
 /*
@@ -63,8 +60,7 @@ void Button::read() {
   values.pop_front();
   value = (std::find(values.begin(), values.end(), 1) != values.end());
 #if DISPLAY_VALUES
-  tft.println("button");
-  tft.println(value);
+  printSensorToScreen("button", value);
 #endif
 }
 
@@ -133,8 +129,7 @@ void Potentiometer::read() {
   }
   value = sum / values.size();
 #if DISPLAY_VALUES
-  tft.println("potentiometer");
-  tft.println(value);
+  printSensorToScreen("potentiometer" + name, value);
 #endif
 };
 
@@ -196,7 +191,7 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
 // read(): reads joystick value
 void Joystick::read() {
 #if DISPLAY_VALUES
-  tft.println("joystick");
+  printToScreen("joystick");
 #endif
   potentiometerX.read();
   potentiometerY.read();
@@ -260,13 +255,13 @@ void sendPeripherals() {
 
 void setup() {
   startTime = millis();
-  setupScreen(tft);
+  setupScreen();
   setupSerial();
 }
 
 void loop() {
   loopStartTime = millis();
-  updateScreen(tft, DISPLAY_VALUES);
+  updateScreen(DISPLAY_VALUES);
   sendPeripherals();
   delay(FRAMERATE);
 }
