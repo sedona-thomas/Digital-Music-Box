@@ -59,6 +59,9 @@ Button::Button(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 5; i++) {
+    value_queue.push(0);
+  }
 }
 
 // read(): reads button value
@@ -66,13 +69,11 @@ void Button::read() {
   pinMode(pin, INPUT_PULLUP);
   value_queue.push(digitalRead(pin));
   value_queue.pop();
-  int sum = 0, count = 0;
-  // Find sum of all array elements
+  int sum = 0;
   for (auto val : value_queue) {
     sum += val;
-    count++;
   }
-  value = avg < 0.5 ? 0 : 1;
+  value = sum / value_queue.size() < 0.5 ? 0 : 1;
   tft.println("button");
   tft.println(value);
 };
