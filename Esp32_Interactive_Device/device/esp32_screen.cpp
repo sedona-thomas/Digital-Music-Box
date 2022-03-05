@@ -20,9 +20,9 @@ void resetScreen() {
 
 // updateScreen(): updates current screen
 void updateScreen(bool display_values) {
-  resetScreen(tft);
+  resetScreen();
   if (!display_values) {
-    rainbowBackground(tft);
+    rainbowBackground();
   }
 }
 
