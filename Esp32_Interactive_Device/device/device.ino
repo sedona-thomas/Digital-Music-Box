@@ -1,5 +1,5 @@
 /*
- *
+ * device.ino: reads values
  */
 
 #define BAUDRATE 115200     // baudrate for serial communications
@@ -8,7 +8,6 @@
 
 #include "ValueQueue.h"
 #include "esp32_screen.h"
-//#include "wifi_controller.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
@@ -126,9 +125,6 @@ void Button::read() {
   pinMode(pin, INPUT_PULLUP);
   values.add(digitalRead(pin));
   value = values.contains(1) ? 1 : 0;
-  // values.push_back(digitalRead(pin));
-  // values.pop_front();
-  // value = (std::find(values.begin(), values.end(), 1) != values.end());
 #if DISPLAY_VALUES
   printSensorToScreen("button", value);
 #endif
@@ -174,13 +170,6 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 void Potentiometer::read() {
   values.add(analogRead(pin));
   value = values.average();
-  // values.push_back(analogRead(pin));
-  // values.pop_front();
-  // int sum = 0;
-  // for (auto val : values) {
-  //   sum += val;
-  // }
-  // value = sum / values.size();
 #if DISPLAY_VALUES
   printSensorToScreen("potentiometer" + name, value);
 #endif
