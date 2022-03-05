@@ -13,24 +13,38 @@
 #include <stdint.h>
 #include <string>
 
+class ValueQueue {
+private:
+  std::list<uint8_t> values;
+
+public:
+  ValueQueue();
+  ValueQueue(int);
+  inline void add(uint8_t value);
+  void push(uint8_t value);
+  void pop();
+  inline uint8_t contains(int i);
+  uint8_t average();
+  inline size_t size();
+};
+
 class Sensor {
 protected:
   uint8_t pin;
   uint8_t value;
-  std::list<uint8_t> values;
-  void read();
+  ValueQueue values;
+  virtual void read() { value = analogRead(pin); };
 };
 
 class SerialCommunication {
 protected:
   std::string name;
   bool json;
-  void send();
+  virtual void send() { Serial.print(value); };
 };
 
 class Button : public Sensor, public SerialCommunication {
 public:
-  Button() {}
   Button(std::string, int, bool);
   Button(int, bool);
   void read();
@@ -39,7 +53,6 @@ public:
 
 class Potentiometer : public Sensor, public SerialCommunication {
 public:
-  Potentiometer() {}
   Potentiometer(std::string, int, bool);
   Potentiometer(int, bool);
   void read();
@@ -48,7 +61,6 @@ public:
 
 class Joystick : public SerialCommunication {
 public:
-  Joystick() {}
   Joystick(std::string, int, int, int, bool);
   void send();
 
@@ -57,6 +69,8 @@ private:
   Potentiometer potentiometerY;
   Button buttonSW;
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 Button button = Button("button1", 37, JSON);
 Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
@@ -75,6 +89,8 @@ void loop() {
   sendPeripherals();
   delay(FRAMERATE);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 // setupSerial(): starts serial communication
 void setupSerial() {
@@ -99,14 +115,50 @@ void sendPeripherals() {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+ValueQueue::ValueQueue() {
+  for (int i = 0; i < 5; i++) {
+    values.push_back(0);
+  }
+}
+
+ValueQueue::ValueQueue(int size) {
+  for (int i = 0; i < size; i++) {
+    values.push_back(0);
+  }
+}
+
+void ValueQueue::add(uint8_t value) {
+  push(value);
+  pop();
+}
+
+inline void ValueQueue::push(uint8_t value) { values.push_back(value); }
+
+inline void ValueQueue::pop() { values.pop_front(); }
+
+inline uint8_t ValueQueue::contains(int i) {
+  return (std::find(values.begin(), values.end(), i) != values.end());
+}
+
+uint8_t ValueQueue::average() {
+  int sum = 0;
+  for (auto val : values) {
+    sum += val;
+  }
+  return sum / size();
+}
+
+inline size_t ValueQueue::size() { return values.size(); }
+
+////////////////////////////////////////////////////////////////////////////////
+
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    values.push_back(0);
-  }
 }
 
 Button::Button(int pin_in, bool json_in) {
@@ -114,17 +166,16 @@ Button::Button(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    values.push_back(0);
-  }
 }
 
 // read(): reads button value
 void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  values.push_back(digitalRead(pin));
-  values.pop_front();
-  value = (std::find(values.begin(), values.end(), 1) != values.end());
+  values.add(digitalRead(pin));
+  value = values.contains(1) ? 1 : 0;
+  // values.push_back(digitalRead(pin));
+  // values.pop_front();
+  // value = (std::find(values.begin(), values.end(), 1) != values.end());
 #if DISPLAY_VALUES
   printSensorToScreen("button", value);
 #endif
@@ -150,14 +201,13 @@ void Button::send() {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    values.push_back(0);
-  }
 }
 
 Potentiometer::Potentiometer(int pin_in, bool json_in) {
@@ -165,20 +215,19 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    values.push_back(0);
-  }
 }
 
 // read(): reads potentiometer value
 void Potentiometer::read() {
-  values.push_back(analogRead(pin));
-  values.pop_front();
-  int sum = 0;
-  for (auto val : values) {
-    sum += val;
-  }
-  value = sum / values.size();
+  values.add(analogRead(pin));
+  value = values.average();
+  // values.push_back(analogRead(pin));
+  // values.pop_front();
+  // int sum = 0;
+  // for (auto val : values) {
+  //   sum += val;
+  // }
+  // value = sum / values.size();
 #if DISPLAY_VALUES
   printSensorToScreen("potentiometer" + name, value);
 #endif

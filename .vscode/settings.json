@@ -42,6 +42,7 @@
         "forward_list": "cpp",
         "iomanip": "cpp",
         "iostream": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "string": "cpp"
     }
 }
