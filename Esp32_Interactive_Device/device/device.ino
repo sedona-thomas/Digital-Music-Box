@@ -1,5 +1,5 @@
 /*
- * device.ino: reads values
+ * device.ino: reads values from an Esp32 and sends them as serial data
  */
 
 #define BAUDRATE 115200     // baudrate for serial communications
