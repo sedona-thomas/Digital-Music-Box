@@ -2,8 +2,8 @@
  *
  */
 
-#define PRINT_TO_ESP32 // defined: sensor values; not defined: rainbow
-                       // background
+#define PRINT_TO_ESP32 // defined: sensors; not defined: rainbow background
+#define JSON // sends JSON data instead of tagged data over serial connection
 
 #include "helper.h"
 #include <SPI.h>
@@ -18,6 +18,10 @@
 TFT_eSPI tft = TFT_eSPI();
 uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
 uint8_t currentTextSize = 1; // 10 pixels
+
+/*
+ * Sensor Classes: contols various sensors
+ */
 
 class Button {
 public:
@@ -226,12 +230,17 @@ void Joystick::send() {
 };
 
 /*
- * Main
+ * Main Code: runs Esp32 setup and loop
  */
 
 unsigned long startTime = 0, loopStartTime = 0;
 
+#ifdef JSON
+bool json = true;
+#else
 bool json = false;
+#endif
+
 Button button = Button("button1", 37, json);
 Potentiometer potentiometer = Potentiometer("potentiometer1", 12, json);
 Joystick joystick = Joystick("joystick1", 27, 26, 25, json);
