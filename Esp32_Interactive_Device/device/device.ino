@@ -35,7 +35,7 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 5; i++) {
     values.push_back(0);
   }
 }
@@ -45,7 +45,7 @@ Button::Button(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 5; i++) {
     values.push_back(0);
   }
 }
@@ -100,7 +100,7 @@ Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 5; i++) {
     values.push_back(0);
   }
 }
@@ -110,7 +110,7 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 5; i++) {
     values.push_back(0);
   }
 }
@@ -119,7 +119,7 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 void Potentiometer::read() {
   values.push_back(analogRead(pin));
   values.pop_front();
-  sum = 0;
+  int sum = 0;
   for (auto val : values) {
     sum += val;
   }
