@@ -111,7 +111,6 @@ class DisplayWithPeripherals(object):
         self.baudrate = 115200
         self.s = serial.Serial(self.port, self.baudrate)
         self.values = defaultdict(int)
-        #{"button": 0, "potentiometer": 0, "joystickVRx": 0, "joystickVRy": 0, "joystickSW": 0}
         self.parser = TagParser(self)
 
     """
