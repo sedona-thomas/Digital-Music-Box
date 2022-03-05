@@ -230,7 +230,6 @@ void Joystick::send() {
 #if DISPLAY_VALUES
   printToScreen("joystick");
 #endif
-
   if (json) {
     Serial.print("joystick_");
     Serial.print(name.c_str());
