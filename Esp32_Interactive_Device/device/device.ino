@@ -2,7 +2,8 @@
  *
  */
 
-#include "Button.h"
+#include <SPI.h>
+#include <TFT_eSPI.h>
 #include <list>
 #include <stdint.h>
 #include <string>
@@ -10,26 +11,9 @@
 #define WAIT 500     // miliseconds
 #define FRAMERATE 50 // miliseconds
 
-#include <SPI.h>
-#include <TFT_eSPI.h>
 TFT_eSPI tft = TFT_eSPI();
-
-uint32_t currentBackgroundColor = TFT_WHITE;
-uint32_t currentTextColor = TFT_BLACK;
+uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
 uint8_t currentTextSize = 1; // 10 pixels
-
-byte red = 31;
-byte green = 0;
-byte blue = 0;
-byte state = 0;
-unsigned int colour = red << 11;
-
-unsigned long startTime = 0;
-unsigned long loopStartTime = 0; // Used for testing draw times
-
-/*
- * Classes
- */
 
 class Button {
 public:
@@ -45,6 +29,7 @@ public:
   void read();
   void send();
 };
+
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
@@ -223,8 +208,36 @@ void Joystick::send() {
 };
 
 /*
- * methods
+ * Main
  */
+
+unsigned long startTime = 0, loopStartTime = 0;
+
+bool json = false;
+Button button = Button("button1", 37, json);
+Potentiometer potentiometer = Potentiometer("potentiometer1", 12, json);
+Joystick joystick = Joystick("joystick1", 27, 26, 25, json);
+
+void setupScreen();
+void setupSerial();
+void sendPeripherals();
+void updateScreen();
+void resetScreen();
+std::vector<String> getLetterVector(std::string str);
+inline uint16_t randomColor();
+inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b);
+void rainbowBackground();
+
+void setup() {
+  setupScreen();
+  setupSerial();
+}
+
+void loop() {
+  updateScreen();
+  sendPeripherals();
+  delay(FRAMERATE);
+}
 
 // setupScreen(): starts ESP32 screen
 void setupScreen() {
@@ -237,24 +250,10 @@ void setupScreen() {
 void setupSerial() {
   Serial.begin(115200);
   delay(1000);
-  setupPeripherals();
-}
-
-bool json = false;
-Button button;
-Potentiometer potentiometer;
-Joystick joystick;
-
-// setupPeripherals(): sets up connections to all peripherals
-void setupPeripherals() {
-  button = Button("button1", 37, json);
-  potentiometer = Potentiometer("potentiometer1", 12, json);
-  joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
 // sendPeripherals(): sends values of all peripherals
 void sendPeripherals() {
-  tft.println("sending");
   if (json) {
     Serial.print("{ data:");
     button.send();
@@ -274,10 +273,6 @@ void sendPeripherals() {
 void updateScreen() {
   loopStartTime = millis();
   resetScreen();
-  tft.println("running");
-  // rainbowBackground();
-  //  tft.println("button: ");
-  //  tft.println(button.value);
 }
 
 // resetScreen(): resets the background and text color/size of the display
@@ -297,8 +292,7 @@ std::vector<String> getLetterVector(std::string str) {
   return letters;
 }
 
-// randomColor(): outputs a random pastel color that can be used for a
-// background
+// randomColor(): outputs a random pastel RGB color
 inline uint16_t randomColor() {
   return getRGB(random(0, 255) / 2, random(0, 255) / 2, random(0, 255) / 2);
 }
@@ -311,6 +305,8 @@ inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b) {
 
 // rainbowBackground(): makes the background a scrolling rainbow gradient
 void rainbowBackground() {
+  byte red = 31, green = 0, blue = 0, state = 0;
+  unsigned int colour = red << 11;
   for (int i = 0; i < tft.width(); i++) {
     tft.drawFastVLine(i, 0, tft.height(), colour);
     switch (state) {
@@ -359,15 +355,4 @@ void rainbowBackground() {
     }
     colour = red << 11 | green << 5 | blue;
   }
-}
-
-void setup() {
-  setupScreen();
-  setupSerial();
-}
-
-void loop() {
-  updateScreen();
-  sendPeripherals();
-  delay(FRAMERATE);
 }
