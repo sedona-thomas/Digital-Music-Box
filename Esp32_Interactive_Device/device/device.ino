@@ -207,7 +207,7 @@ void Joystick::send() {
 // setupScreen(): starts ESP32 screen
 void setupScreen() {
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(2);
   startTime = millis();
 }
 
