@@ -2,16 +2,19 @@
 
 ## Materials
 
- - ESP32 TTGO T-Display (CP 2104)
- - Computer
+ - ESP32 TTGO T-Display (CP 2104 Chip)
+ - computer
  - USB-C cord
  - button
  - joystick
  - potentiometer
  - wires
+ - 1/8 in acrylic sheet
+ - acrylic glue
+ - hot glue
+ - wood blocks
  - soldering tools
- - Acrylic sheet
- - Laser cutter
+ - laser cutter
 
 ## Make at Home
 
@@ -74,11 +77,23 @@
 
 ## Cut Case
 
-- 
+- Download `Case/caseplans.svg`
+- Upload file to a laser cutter
+- Choose a sheet of 1/8 in acrylic (can also be made of cardboard or wood)
+- Cut out the pattern
+- Drill a hole in the side of the box that fits your USB-C cable so the Esp32 can be plugged in
+- Cut a 2.25 in block of wood for the Esp32
+- Cut a 1.50 in block of wood for the joystick
+- Cut a 2.00 in block of wood for the potentiometer
 
 ## Assemble Case
 
-- 
+- Use acrylic glue to assemble the box, but do not attach the bottom panel with the single hole in the corner
+- Use sandpaper to remove all harsh edges on the blocks of wood
+- Hot glue the joystick and potentiometer to their blocks of wood
+- Screw the button into place (if button is too small, add a small zip tie before screwing on)
+- Hot glue each block of wood so the corresponding peripheral fits in the correct sized hole
+- Place the Esp32 over its block, plug it in, and carefully close the box
 
 ### Run Device
 
