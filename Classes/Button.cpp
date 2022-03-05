@@ -1,35 +1,55 @@
 class Button {
 public:
   std::string name;
-  const uint8_t pin;
-  bool detected;
+  uint8_t pin;
   uint8_t value;
+  bool json;
 
-  Button(std::string, int);
+  Button() {}
+  Button(std::string, int, bool);
+  Button(int, bool);
   void read();
   void send();
 };
 
-Button(std::string _name, int _pin) {
-  name = _name;
-  pin = _pin;
-  detected = false;
+Button::Button(std::string name_in, int pin_in, bool json_in) {
+  name = name_in;
+  pin = pin_in;
   value = 0;
+  json = json_in;
+}
+
+Button::Button(int pin_in, bool json_in) {
+  name = "";
+  pin = pin_in;
+  value = 0;
+  json = json_in;
 }
 
 // read(): reads button value
-void Peripheral::read() {
-  detected = true;
+void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  digitalRead(pin);
+  value = digitalRead(pin);
+  tft.println("button");
+  tft.println(value);
 };
 
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
-  if (detected) {
-    detected = false;
-    Serial.print("<button_" + name + ">");
+  Button::read();
+  if (json) {
+    Serial.print("button_");
+    Serial.print(name.c_str());
+    Serial.print(": ");
     Serial.print(value);
-    Serial.print("</button_" + name + ">");
+    Serial.print(",");
+  } else {
+    Serial.print("<button_");
+    Serial.print(name.c_str());
+    Serial.print(">");
+    Serial.print(value);
+    Serial.print("</button_");
+    Serial.print(name.c_str());
+    Serial.print(">");
   }
 };
