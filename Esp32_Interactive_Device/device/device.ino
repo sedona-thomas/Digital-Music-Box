@@ -5,14 +5,12 @@
 #define DISPLAY_VALUES true // defined: sensors; not defined: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
 
-#include "esp32_screen.h"
+#include "../../Controls/esp32_screen.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
 #include <stdint.h>
 #include <string>
-
-unsigned long startTime = 0, loopStartTime = 0;
 
 /*
  * Sensor Classes: contols various sensors
@@ -254,13 +252,11 @@ void sendPeripherals() {
 }
 
 void setup() {
-  startTime = millis();
   setupScreen();
   setupSerial();
 }
 
 void loop() {
-  loopStartTime = millis();
   updateScreen(DISPLAY_VALUES);
   sendPeripherals();
   delay(FRAMERATE);
