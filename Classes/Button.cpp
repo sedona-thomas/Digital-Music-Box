@@ -1,22 +1,17 @@
-class Button {
-public:
-  std::string name;
-  uint8_t pin;
-  uint8_t value;
-  bool json;
+/*
+ * Button.cpp: Button class methods
+ */
 
-  Button() {}
-  Button(std::string, int, bool);
-  Button(int, bool);
-  void read();
-  void send();
-};
+#include "Button.h"
 
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
+  }
 }
 
 Button::Button(int pin_in, bool json_in) {
@@ -24,12 +19,22 @@ Button::Button(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
+  }
 }
 
 // read(): reads button value
 void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  value = digitalRead(pin);
+  values.push_back(digitalRead(pin));
+  values.pop_front();
+  int sum = 0;
+  for (auto val : values) {
+    sum += val;
+  }
+  value = sum / values.size() < 0.1 ? 0 : 1;
+  value = (std::find(values.begin(), values.end(), 1) != values.end());
   tft.println("button");
   tft.println(value);
 };
@@ -52,4 +57,4 @@ void Button::send() {
     Serial.print(name.c_str());
     Serial.print(">");
   }
-};
+}
