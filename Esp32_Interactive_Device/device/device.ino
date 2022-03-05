@@ -13,32 +13,91 @@
 #include <stdint.h>
 #include <string>
 
-class Button;
-class Potentiometer;
-class Joystick;
-
-Button button = Button("button1", 37, JSON);
-Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
-Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
-
-/*
- * Sensor Classes: contols various sensors
- */
-
-class Button {
-public:
-  std::string name;
+class Sensor {
+protected:
   uint8_t pin;
   uint8_t value;
   std::list<uint8_t> values;
-  bool json;
+  void read();
+};
 
+class SerialCommunication {
+protected:
+  std::string name;
+  bool json;
+  void send();
+};
+
+class Button : public Sensor, public SerialCommunication {
+public:
   Button() {}
   Button(std::string, int, bool);
   Button(int, bool);
   void read();
   void send();
 };
+
+class Potentiometer : public Sensor, public SerialCommunication {
+public:
+  Potentiometer() {}
+  Potentiometer(std::string, int, bool);
+  Potentiometer(int, bool);
+  void read();
+  void send();
+};
+
+class Joystick : public SerialCommunication {
+public:
+  Joystick() {}
+  Joystick(std::string, int, int, int, bool);
+  void send();
+
+private:
+  Potentiometer potentiometerX;
+  Potentiometer potentiometerY;
+  Button buttonSW;
+};
+
+Button button = Button("button1", 37, JSON);
+Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
+Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
+
+void setupSerial();
+void sendPeripherals();
+
+void setup() {
+  setupScreen();
+  setupSerial();
+}
+
+void loop() {
+  updateScreen(DISPLAY_VALUES);
+  sendPeripherals();
+  delay(FRAMERATE);
+}
+
+// setupSerial(): starts serial communication
+void setupSerial() {
+  Serial.begin(BAUDRATE);
+  delay(1000);
+}
+
+// sendPeripherals(): sends values of all peripherals
+void sendPeripherals() {
+  if (JSON) {
+    Serial.print("{ data:");
+    button.send();
+    potentiometer.send();
+    joystick.send();
+    Serial.println("}");
+  } else {
+    Serial.print("<data>");
+    button.send();
+    potentiometer.send();
+    joystick.send();
+    Serial.println("</data>");
+  }
+}
 
 Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
@@ -90,21 +149,6 @@ void Button::send() {
     Serial.print(">");
   }
 }
-
-class Potentiometer {
-public:
-  std::string name;
-  uint8_t pin;
-  uint8_t value;
-  std::list<uint8_t> values;
-  bool json;
-
-  Potentiometer() {}
-  Potentiometer(std::string, int, bool);
-  Potentiometer(int, bool);
-  void read();
-  void send();
-};
 
 Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
@@ -172,20 +216,6 @@ void Potentiometer::send() {
   }
 };
 
-class Joystick {
-public:
-  std::string name;
-  Potentiometer potentiometerX;
-  Potentiometer potentiometerY;
-  Button buttonSW;
-  bool json;
-
-  Joystick() {}
-  Joystick(std::string, int, int, int, bool);
-  void read();
-  void send();
-};
-
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
   name = name_in;
@@ -195,18 +225,11 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
   json = json_in;
 }
 
-// read(): reads joystick value
-void Joystick::read() {
+// send(): sends data from peripheral over the serial connection
+void Joystick::send() {
 #if DISPLAY_VALUES
   printToScreen("joystick");
 #endif
-  potentiometerX.read();
-  potentiometerY.read();
-  buttonSW.read();
-};
-
-// send(): sends data from peripheral over the serial connection
-void Joystick::send() {
   if (json) {
     Serial.print("joystick_");
     Serial.print(name.c_str());
@@ -228,41 +251,3 @@ void Joystick::send() {
     Serial.print(">");
   }
 };
-
-/*
- * Main Code: runs Esp32 setup and loop
- */
-
-// setupSerial(): starts serial communication
-void setupSerial() {
-  Serial.begin(BAUDRATE);
-  delay(1000);
-}
-
-// sendPeripherals(): sends values of all peripherals
-void sendPeripherals() {
-  if (JSON) {
-    Serial.print("{ data:");
-    button.send();
-    potentiometer.send();
-    joystick.send();
-    Serial.println("}");
-  } else {
-    Serial.print("<data>");
-    button.send();
-    potentiometer.send();
-    joystick.send();
-    Serial.println("</data>");
-  }
-}
-
-void setup() {
-  setupScreen();
-  setupSerial();
-}
-
-void loop() {
-  updateScreen(DISPLAY_VALUES);
-  sendPeripherals();
-  delay(FRAMERATE);
-}
