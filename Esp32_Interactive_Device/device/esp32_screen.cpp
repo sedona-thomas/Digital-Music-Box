@@ -16,6 +16,7 @@ void resetScreen() {
   tft.fillScreen(currentBackgroundColor);
   tft.setTextColor(currentTextColor);
   tft.setCursor(0, 0, currentTextSize);
+  tft.setRotation(2);
 }
 
 // updateScreen(): updates current screen
@@ -60,6 +61,7 @@ inline uint16_t getRGB(uint8_t r, uint8_t g, uint8_t b) {
 
 // rainbowBackground(): makes the background a scrolling rainbow gradient
 void rainbowBackground() {
+  tft.setRotation(1);
   byte red = 31, green = 0, blue = 0, state = 0;
   unsigned int colour = red << 11;
   for (int i = 0; i < tft.width(); i++) {
