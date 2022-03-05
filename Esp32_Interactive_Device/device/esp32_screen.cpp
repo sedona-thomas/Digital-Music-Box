@@ -36,10 +36,7 @@ void printSensorToScreen(std::string name, uint8_t value) {
 }
 
 // getArduinoString(): turns a std::string into an Arduino String
-String getArduinoString(std::string str) {
-  String s = std.c_str();
-  return s;
-}
+String getArduinoString(std::string str) { return (String)str.c_str(); }
 
 // getLetterVector(): turns a std::string into an Arduino String vector
 std::vector<String> getLetterVector(std::string str) {
