@@ -7,7 +7,7 @@
 #define WAIT 500            // miliseconds
 #define FRAMERATE 50        // miliseconds
 
-#include "helper.h"
+#include "esp32_screen.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
@@ -15,8 +15,6 @@
 #include <string>
 
 TFT_eSPI tft = TFT_eSPI();
-uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
-uint8_t currentTextSize = 1; // 10 pixels
 unsigned long startTime = 0, loopStartTime = 0;
 
 /*

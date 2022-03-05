@@ -1,4 +1,4 @@
-#include "helper.h"
+#include "esp32_screen.h"
 
 // setupScreen(): starts ESP32 screen
 void setupScreen(TFT_eSPI tft) {

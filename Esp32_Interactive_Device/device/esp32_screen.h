@@ -1,11 +1,14 @@
-#ifndef __HELPER_H__
-#define __HELPER_H__
+#ifndef __ESP32_SCREEN_H__
+#define __ESP32_SCREEN_H__
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
 #include <stdint.h>
 #include <string>
+
+uint32_t currentBackgroundColor = TFT_WHITE, currentTextColor = TFT_BLACK;
+uint8_t currentTextSize = 1; // 10 pixels
 
 void setupScreen(TFT_eSPI tft);
 void resetScreen(TFT_eSPI tft);
