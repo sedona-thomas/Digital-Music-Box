@@ -2,10 +2,10 @@
  *
  */
 
-#include <queue>
+#include <list>
 
-#define WAIT 500      // miliseconds
-#define FRAMERATE 100 // miliseconds
+#define WAIT 500     // miliseconds
+#define FRAMERATE 50 // miliseconds
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
@@ -34,7 +34,7 @@ public:
   std::string name;
   uint8_t pin;
   uint8_t value;
-  queue<uint8_t> value_queue;
+  std::list<uint8_t> values;
   bool json;
 
   Button() {}
@@ -49,8 +49,8 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    value_queue.push(0);
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
   }
 }
 
@@ -59,21 +59,22 @@ Button::Button(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
-  for (int i = 0; i < 5; i++) {
-    value_queue.push(0);
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
   }
 }
 
 // read(): reads button value
 void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  value_queue.push(digitalRead(pin));
-  value_queue.pop();
+  values.push_back(digitalRead(pin));
+  values.pop_front();
   int sum = 0;
-  for (auto val : value_queue) {
+  for (auto val : values) {
     sum += val;
   }
-  value = sum / value_queue.size() < 0.5 ? 0 : 1;
+  value = sum / values.size() < 0.1 ? 0 : 1;
+  value = (std::find(values.begin(), values.end(), 1) != values.end());
   tft.println("button");
   tft.println(value);
 };
@@ -127,7 +128,11 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 }
 
 // read(): reads potentiometer value
-void Potentiometer::read() { value = analogRead(pin); };
+void Potentiometer::read() {
+  value = analogRead(pin);
+  tft.println("potentiometer");
+  tft.println(value);
+};
 
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
@@ -186,6 +191,7 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
 
 // read(): reads joystick value
 void Joystick::read() {
+  tft.println("joystick");
   potentiometerX.read();
   potentiometerY.read();
   buttonSW.read();
