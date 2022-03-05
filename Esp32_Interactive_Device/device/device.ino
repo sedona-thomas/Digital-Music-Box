@@ -2,6 +2,31 @@
  *
  */
 
+#define WAIT 500      // miliseconds
+#define FRAMERATE 100 // miliseconds
+
+#include <SPI.h>
+#include <TFT_eSPI.h>
+#include <stdint.h>
+TFT_eSPI tft = TFT_eSPI();
+
+uint32_t currentBackgroundColor = TFT_WHITE;
+uint32_t currentTextColor = TFT_BLACK;
+uint8_t currentTextSize = 1; // 10 pixels
+
+byte red = 31;
+byte green = 0;
+byte blue = 0;
+byte state = 0;
+unsigned int colour = red << 11;
+
+unsigned long startTime = 0;
+unsigned long loopStartTime = 0; // Used for testing draw times
+
+/*
+ * Classes
+ */
+
 class Button {
 public:
   std::string name;
@@ -33,7 +58,9 @@ Button::Button(int pin_in, bool json_in) {
 // read(): reads button value
 void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  digitalRead(pin);
+  value = digitalRead(pin);
+  tft.println("button");
+  tft.println(value);
 };
 
 // send(): sends data from peripheral over the serial connection
@@ -84,7 +111,7 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 }
 
 // read(): reads potentiometer value
-void Potentiometer::read() { analogRead(pin); };
+void Potentiometer::read() { value = analogRead(pin); };
 
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
@@ -171,34 +198,9 @@ void Joystick::send() {
   }
 };
 
-  /*
-   * Main Code
-   */
-
-#define WAIT 500      // miliseconds
-#define FRAMERATE 100 // miliseconds
-
-#include <SPI.h>
-#include <TFT_eSPI.h>
-#include <stdint.h>
-TFT_eSPI tft = TFT_eSPI();
-
-uint32_t currentBackgroundColor = TFT_WHITE;
-uint32_t currentTextColor = TFT_BLACK;
-uint8_t currentTextSize = 1; // 10 pixels
-
-byte red = 31;
-byte green = 0;
-byte blue = 0;
-byte state = 0;
-unsigned int colour = red << 11;
-
-unsigned long startTime = 0;
-unsigned long loopStartTime = 0; // Used for testing draw times
-
-Button button;
-Potentiometer potentiometer;
-Joystick joystick;
+/*
+ * methods
+ */
 
 // setupScreen(): starts ESP32 screen
 void setupScreen() {
@@ -214,9 +216,13 @@ void setupSerial() {
   setupPeripherals();
 }
 
+bool json = false;
+Button button;
+Potentiometer potentiometer;
+Joystick joystick;
+
 // setupPeripherals(): sets up connections to all peripherals
 void setupPeripherals() {
-  bool json = false;
   button = Button("button1", 37, json);
   potentiometer = Potentiometer("potentiometer1", 12, json);
   joystick = Joystick("joystick1", 27, 26, 25, json);
@@ -227,19 +233,27 @@ void updateScreen() {
   loopStartTime = millis();
   resetScreen();
   tft.println("running");
-  rainbowBackground();
-  // tft.println("button: ");
-  // tft.println(button.value);
+  // rainbowBackground();
+  //  tft.println("button: ");
+  //  tft.println(button.value);
   delay(FRAMERATE);
 }
 
 // sendPeripherals(): sends values of all peripherals
 void sendPeripherals() {
-  Serial.print("{ data:");
-  button.send();
-  potentiometer.send();
-  joystick.send();
-  Serial.println("}");
+  if (json) {
+    Serial.print("{ data:");
+    button.send();
+    potentiometer.send();
+    joystick.send();
+    Serial.println("}");
+  } else {
+    Serial.print("<data>");
+    button.send();
+    potentiometer.send();
+    joystick.send();
+    Serial.println("</data>");
+  }
 }
 
 // resetScreen(): resets the background and text color/size of the display
