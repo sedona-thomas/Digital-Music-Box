@@ -2,6 +2,8 @@
  *
  */
 
+#include <queue>
+
 #define WAIT 500      // miliseconds
 #define FRAMERATE 100 // miliseconds
 
@@ -32,6 +34,7 @@ public:
   std::string name;
   uint8_t pin;
   uint8_t value;
+  queue<uint8_t> value_queue;
   bool json;
 
   Button() {}
@@ -46,6 +49,9 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 5; i++) {
+    value_queue.push(0);
+  }
 }
 
 Button::Button(int pin_in, bool json_in) {
@@ -58,7 +64,15 @@ Button::Button(int pin_in, bool json_in) {
 // read(): reads button value
 void Button::read() {
   pinMode(pin, INPUT_PULLUP);
-  value = digitalRead(pin);
+  value_queue.push(digitalRead(pin));
+  value_queue.pop();
+  int sum = 0, count = 0;
+  // Find sum of all array elements
+  for (auto val : value_queue) {
+    sum += val;
+    count++;
+  }
+  value = avg < 0.5 ? 0 : 1;
   tft.println("button");
   tft.println(value);
 };
