@@ -53,22 +53,22 @@
 
 #### Solder Button
 
-- Solder the `+` (voltage in) end of the button to a 3V pin of the ESP32
-- Solder the `-` (voltage out) end of the button to the `GPIO Pin #12` (also known as the `Touch Pin #5`) of the ESP32
+- Solder the `+` (voltage in) end of the button to a ground pin of the ESP32
+- Solder the `-` (voltage out) end of the button to the `GPIO Pin #37` of the ESP32
 
 #### Solder Potentiometer
 
-- Solder the `V_in` (voltage in, the first pin) end of the potentiometer to a 3V pin of the ESP32
-- Solder the `V_out` (voltage out, the second pin) end of the potentiometer to the `GPIO Pin #13` (also known as the `Touch Pin #4`) of the ESP32
-- Solder the `GND` (ground, the third pin) end of the potentiometer to a ground pin of the ESP32
+- Solder the `V_in` (voltage in, the first pin) end of the potentiometer to a 3V pin of the ESP32 (the 3V pin on the bottom left)
+- Solder the `V_out` (voltage out, the second pin) end of the potentiometer to the `GPIO Pin #13` of the ESP32
+- Solder the `GND` (ground, the third pin) end of the potentiometer to a ground pin of the ESP32 (the second ground pin on the top left)
 
 #### Solder Joystick
 
-- Solder the `GND` (ground, the first pin) end of the potentiometer to a ground pin of the ESP32
-- Solder the `+5V` (voltage in, the second pin) end of the potentiometer to a 5V pin of the ESP32
-- Solder the `VRx` (x-axis potentiometer, the third pin) end of the potentiometer to the `GPIO Pin #27` (also known as the `Touch Pin #7`) of the ESP32
-- Solder the `VRy` (y-axis potentiometer, the fourth pin) end of the potentiometer to the `GPIO Pin #33` (also known as the `Touch Pin #8`) of the ESP32
-- Solder the `SW` (button, the fifth pin) end of the potentiometer to the `GPIO Pin #32` (also known as the `Touch Pin #9`) of the ESP32
+- Solder the `GND` (ground, the first pin) end of the potentiometer to a ground pin of the ESP32 (the ground pin on the bottom right)
+- Solder the `+5V` (voltage in, the second pin) end of the potentiometer to a 3V pin of the ESP32 (the 3V pin on the top right)
+- Solder the `VRx` (x-axis potentiometer, the third pin) end of the potentiometer to the `GPIO Pin #27` of the ESP32
+- Solder the `VRy` (y-axis potentiometer, the fourth pin) end of the potentiometer to the `GPIO Pin #26` of the ESP32
+- Solder the `SW` (button, the fifth pin) end of the potentiometer to the `GPIO Pin #25` of the ESP32
 
 ### Make Case
 
