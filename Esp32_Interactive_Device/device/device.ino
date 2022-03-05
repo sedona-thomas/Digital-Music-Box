@@ -2,6 +2,9 @@
  *
  */
 
+#define PRINT_TO_ESP32 // defined: sensor values; not defined: rainbow
+                       // background
+
 #include "helper.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
@@ -57,9 +60,11 @@ void Button::read() {
   values.push_back(digitalRead(pin));
   values.pop_front();
   value = (std::find(values.begin(), values.end(), 1) != values.end());
+#ifdef PRINT_TO_ESP32
   tft.println("button");
   tft.println(value);
-};
+#endif
+}
 
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
@@ -125,8 +130,10 @@ void Potentiometer::read() {
     sum += val;
   }
   value = sum / values.size();
+#ifdef PRINT_TO_ESP32
   tft.println("potentiometer");
   tft.println(value);
+#endif
 };
 
 // send(): sends data from peripheral over the serial connection
@@ -186,7 +193,9 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
 
 // read(): reads joystick value
 void Joystick::read() {
+#ifdef PRINT_TO_ESP32
   tft.println("joystick");
+#endif
   potentiometerX.read();
   potentiometerY.read();
   buttonSW.read();
@@ -231,7 +240,6 @@ void setupScreen();
 void setupSerial();
 void sendPeripherals();
 void updateScreen();
-void resetScreen();
 
 void setup() {
   setupScreen();
@@ -277,13 +285,8 @@ void sendPeripherals() {
 // updateScreen(): updates current screen
 void updateScreen() {
   loopStartTime = millis();
-  resetScreen();
-}
-
-// resetScreen(): resets the background and text color/size of the display
-void resetScreen() {
-  tft.setTextSize(currentTextSize);
-  tft.fillScreen(currentBackgroundColor);
-  tft.setTextColor(currentTextColor);
-  tft.setCursor(0, 0, currentTextSize);
+  resetScreen(tft);
+#ifndef PRINT_TO_ESP32
+  rainbowBackground(tft);
+#endif
 }

@@ -1,5 +1,13 @@
 #include "helper.h"
 
+// resetScreen(): resets the background and text color/size of the display
+void resetScreen(TFT_eSPI tft) {
+  tft.setTextSize(currentTextSize);
+  tft.fillScreen(currentBackgroundColor);
+  tft.setTextColor(currentTextColor);
+  tft.setCursor(0, 0, currentTextSize);
+}
+
 // getLetterVector(): turns a std::string into an Arduino String vector
 std::vector<String> getLetterVector(std::string str) {
   std::vector<String> letters;
