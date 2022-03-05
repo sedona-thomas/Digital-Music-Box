@@ -2,7 +2,7 @@
  *
  */
 
-#include "button.h"
+#include "Button.h"
 #include <list>
 
 #define WAIT 500     // miliseconds
