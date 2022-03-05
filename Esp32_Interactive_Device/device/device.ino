@@ -65,6 +65,7 @@ void Button::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
+  Button::read();
   if (json) {
     Serial.print("button_");
     Serial.print(name.c_str());
@@ -115,6 +116,7 @@ void Potentiometer::read() { value = analogRead(pin); };
 
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
+  Potentiometer::read();
   if (json) {
     if (name.length() > 0) {
       Serial.print("potentiometer_");
@@ -161,9 +163,9 @@ public:
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
   name = name_in;
-  potentiometerX = Potentiometer(pin_X, json_in);
-  potentiometerY = Potentiometer(pin_Y, json_in);
-  buttonSW = Button(pin_SW, json_in);
+  potentiometerX = Potentiometer("x", pin_X, json_in);
+  potentiometerY = Potentiometer("y", pin_Y, json_in);
+  buttonSW = Button("sw", pin_SW, json_in);
   json = json_in;
 }
 
@@ -228,19 +230,9 @@ void setupPeripherals() {
   joystick = Joystick("joystick1", 27, 26, 25, json);
 }
 
-// updateScreen(): updates current screen
-void updateScreen() {
-  loopStartTime = millis();
-  resetScreen();
-  tft.println("running");
-  // rainbowBackground();
-  //  tft.println("button: ");
-  //  tft.println(button.value);
-  delay(FRAMERATE);
-}
-
 // sendPeripherals(): sends values of all peripherals
 void sendPeripherals() {
+  tft.println("sending");
   if (json) {
     Serial.print("{ data:");
     button.send();
@@ -254,6 +246,16 @@ void sendPeripherals() {
     joystick.send();
     Serial.println("</data>");
   }
+}
+
+// updateScreen(): updates current screen
+void updateScreen() {
+  loopStartTime = millis();
+  resetScreen();
+  tft.println("running");
+  // rainbowBackground();
+  //  tft.println("button: ");
+  //  tft.println(button.value);
 }
 
 // resetScreen(): resets the background and text color/size of the display
@@ -345,4 +347,5 @@ void setup() {
 void loop() {
   updateScreen();
   sendPeripherals();
+  delay(FRAMERATE);
 }
