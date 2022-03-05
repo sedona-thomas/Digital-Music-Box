@@ -2,6 +2,7 @@
  *
  */
 
+#define BAUDRATE 115200     // baudrate for serial communications
 #define DISPLAY_VALUES true // defined: sensors; not defined: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
 
@@ -11,6 +12,14 @@
 #include <list>
 #include <stdint.h>
 #include <string>
+
+class Button;
+class Potentiometer;
+class Joystick;
+
+Button button = Button("button1", 37, JSON);
+Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
+Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
 
 /*
  * Sensor Classes: contols various sensors
@@ -224,13 +233,9 @@ void Joystick::send() {
  * Main Code: runs Esp32 setup and loop
  */
 
-Button button = Button("button1", 37, JSON);
-Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
-Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
-
 // setupSerial(): starts serial communication
 void setupSerial() {
-  Serial.begin(115200);
+  Serial.begin(BAUDRATE);
   delay(1000);
 }
 
