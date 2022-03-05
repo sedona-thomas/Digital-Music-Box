@@ -2,7 +2,7 @@
  *
  */
 
-#define PRINT_TO_ESP32 // defined: sensors; not defined: rainbow background
+#define DISPLAY_VALUES // defined: sensors; not defined: rainbow background
 #define JSON // sends JSON data instead of tagged data over serial connection
 
 #include "helper.h"
@@ -64,7 +64,7 @@ void Button::read() {
   values.push_back(digitalRead(pin));
   values.pop_front();
   value = (std::find(values.begin(), values.end(), 1) != values.end());
-#ifdef PRINT_TO_ESP32
+#ifdef DISPLAY_VALUES
   tft.println("button");
   tft.println(value);
 #endif
@@ -134,7 +134,7 @@ void Potentiometer::read() {
     sum += val;
   }
   value = sum / values.size();
-#ifdef PRINT_TO_ESP32
+#ifdef DISPLAY_VALUES
   tft.println("potentiometer");
   tft.println(value);
 #endif
@@ -197,7 +197,7 @@ Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
 
 // read(): reads joystick value
 void Joystick::read() {
-#ifdef PRINT_TO_ESP32
+#ifdef DISPLAY_VALUES
   tft.println("joystick");
 #endif
   potentiometerX.read();
@@ -295,7 +295,7 @@ void sendPeripherals() {
 void updateScreen() {
   loopStartTime = millis();
   resetScreen(tft);
-#ifndef PRINT_TO_ESP32
+#ifndef DISPLAY_VALUES
   rainbowBackground(tft);
 #endif
 }
