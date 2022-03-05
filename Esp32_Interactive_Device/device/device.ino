@@ -8,6 +8,7 @@
 
 #include "ValueQueue.h"
 #include "esp32_screen.h"
+//#include "wifi_controller.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <list>
