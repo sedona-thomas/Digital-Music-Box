@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <list>
 #include <stdint.h>
-#include <string>
 
 class ValueQueue {
 private:
