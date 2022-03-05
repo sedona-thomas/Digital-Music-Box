@@ -4,13 +4,14 @@
 
 #include "Button.h"
 #include <list>
+#include <stdint.h>
+#include <string>
 
 #define WAIT 500     // miliseconds
 #define FRAMERATE 50 // miliseconds
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
-#include <stdint.h>
 TFT_eSPI tft = TFT_eSPI();
 
 uint32_t currentBackgroundColor = TFT_WHITE;
