@@ -55,11 +55,6 @@ void Button::read() {
   pinMode(pin, INPUT_PULLUP);
   values.push_back(digitalRead(pin));
   values.pop_front();
-  int sum = 0;
-  for (auto val : values) {
-    sum += val;
-  }
-  value = sum / values.size() < 0.1 ? 0 : 1;
   value = (std::find(values.begin(), values.end(), 1) != values.end());
   tft.println("button");
   tft.println(value);
@@ -90,6 +85,7 @@ public:
   std::string name;
   uint8_t pin;
   uint8_t value;
+  std::list<uint8_t> values;
   bool json;
 
   Potentiometer() {}
@@ -104,6 +100,9 @@ Potentiometer::Potentiometer(std::string name_in, int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
+  }
 }
 
 Potentiometer::Potentiometer(int pin_in, bool json_in) {
@@ -111,11 +110,16 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
   pin = pin_in;
   value = 0;
   json = json_in;
+  for (int i = 0; i < 8; i++) {
+    values.push_back(0);
+  }
 }
 
 // read(): reads potentiometer value
 void Potentiometer::read() {
-  value = analogRead(pin);
+  values.push_back(analogRead(pin));
+  values.pop_front();
+  value = (std::find(values.begin(), values.end(), 1) != values.end());
   tft.println("potentiometer");
   tft.println(value);
 };
