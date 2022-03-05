@@ -119,7 +119,11 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 void Potentiometer::read() {
   values.push_back(analogRead(pin));
   values.pop_front();
-  value = (std::find(values.begin(), values.end(), 1) != values.end());
+  sum = 0;
+  for (auto val : values) {
+    sum += val;
+  }
+  value = sum / values.size();
   tft.println("potentiometer");
   tft.println(value);
 };
