@@ -155,4 +155,5 @@ if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
         display.update()
-        print(display.values)
+        # print(display.values)
+        print()
