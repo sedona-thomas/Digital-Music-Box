@@ -92,10 +92,8 @@ class TagParser(object):
     """
 
     def process_tag(self, tag, data):
-        print("here", data)
         if data.strip().isnumeric():
             self.device.values[tag] = int(data)
-            print(tag, data)
         else:
             self.process_data(data)
 
@@ -124,7 +122,6 @@ class DisplayWithPeripherals(object):
 
     def update(self):
         sensor = str(self.s.readline(), 'ascii').strip()
-        print(sensor)
         self.parser.feed(sensor)
 
     """
