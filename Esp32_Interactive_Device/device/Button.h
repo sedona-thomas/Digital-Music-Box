@@ -1,6 +1,10 @@
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
+#include <list>
+#include <stdint.h>
+#include <string>
+
 class Button {
 public:
   std::string name;
