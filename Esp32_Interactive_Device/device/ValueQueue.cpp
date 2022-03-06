@@ -36,7 +36,7 @@ uint8_t ValueQueue::average() {
 uint8_t ValueQueue::median() {
   std::list<uint8_t> temp(values);
   temp.sort();
-  return temp[temp.size()];
+  return temp[temp.size() / 2];
 }
 
 inline size_t ValueQueue::size() { return values.size(); }
