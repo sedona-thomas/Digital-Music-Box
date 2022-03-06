@@ -22,8 +22,7 @@ var partialDistance = 15;
 var modulatorFrequencyValue = 100;
 var modulationIndexValue = 100;
 var lfoFreq = 2;
-octave = 1;
-var octave;
+var octave = 1;
 var octaves = [1 / 4, 1 / 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 const keyboardFrequencyMap =
@@ -89,7 +88,7 @@ $("#start_button").on('click', async () => {
     await setupPort();
     setupReader();
     setupAudio();
-    readLoop();
+    await readLoop();
 });
 
 window.addEventListener('keydown', keyDown, false);
@@ -135,7 +134,6 @@ function resetModes() {
 
 // readLoop(): reads and processes input stream values
 async function readLoop() {
-    counterVal = 0;
     while (true) {
         const { value, done } = await reader.read();
         string = value;
@@ -163,36 +161,25 @@ async function readLoop() {
 
 // controlKeyboardParameters(): manages sensor input to control keyboard
 function controlKeyboardParameters(data) {
-
-    console.log("here")
-
     octave = octaves[Math.floor(data["potentiometer_octave"] / (256 / octaves.length))];
 
-    console.log(data)
+    lfo = data["button_mode"] ? lfo : !lfo;
 
-    if (data["button_mode"] == 0) {
-        lfo = !lfo;
-        console.log("lfo")
-    }
+    lfoFreq = data["joystick_joystick1"]["potentiometer_x"] < 5 ? lfoFreq + 1 : lfoFreq;
+    lfoFreq = data["joystick_joystick1"]["potentiometer_x"] > 250 && lfoFreq > 0 ? lfoFreq - 1 : lfoFreq;
 
-    if (data["joystick_joystick1"]["buttonsw"] == 0) {
-        resetModes();
-        console.log("reset")
-    }
+    numberOfPartials = data["joystick_joystick1"]["potentiometer_y"] > 250 && numberOfPartials < 7 ? numberOfPartials + 1 : numberOfPartials;
+    numberOfPartials = data["joystick_joystick1"]["potentiometer_y"] < 5 && numberOfPartials > 1 ? numberOfPartials - 1 : numberOfPartials;
 
-    if (data["joystick_joystick1"]["potentiometerx"] < 5) {
-        lfoFreq += 5;
-    } else if (data["joystick_joystick1"]["potentiometerx"] > 250) {
-        lfoFreq -= 5;
-    } else { console.log("nolfo") }
+    mode = data["joystick_joystick1"]["button_sw"] == 0 ? 'single' : mode;
+    waveform = data["joystick_joystick1"]["button_sw"] == 0 ? 'sine' : waveform;
+    lfo = data["joystick_joystick1"]["button_sw"] == 0 ? false : lfo;
+    numberOfPartials = data["joystick_joystick1"]["button_sw"] == 0 ? 5 : numberOfPartials;
+    partialDistance = data["joystick_joystick1"]["button_sw"] == 0 ? 15 : partialDistance;
+    modulatorFrequencyValue = data["joystick_joystick1"]["button_sw"] == 0 ? 100 : modulatorFrequencyValue;
+    modulationIndexValue = data["joystick_joystick1"]["button_sw"] == 0 ? 100 : modulationIndexValue;
+    lfoFreq = data["joystick_joystick1"]["button_sw"] == 0 ? 2 : lfoFreq;
 
-    if (data["joystick_joystick1"]["potentiometery"] > 250) {
-        numberOfPartials += 5;
-        console.log("up")
-    } else if (data["joystick_joystick1"]["potentiometery"] > 5) {
-        numberOfPartials -= 5;
-        console.log("down")
-    } else { console.log("nopartial") }
 }
 
 // parseValue(): parses value of serial input stream as JSON format

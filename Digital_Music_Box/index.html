@@ -26,18 +26,17 @@
             <h1>Digital Synthesizer</h1>
 
             <div id="start_prompt" role="alert">
-                <p>Click below to begin.</p>
-                <button id="start_button">Click to Start!</button>
+                <button id="start_button">Click Here to Set Up the Synth!</button>
             </div>
 
             <br>
 
-            <p>Click the letter keys to play the keyboard.</p>
-            <p>Click the joystick button to reset everything.</p>
+            <p>Type on the keyboard to play notes.</p>
+            <p>Click the joystick button for 2 seconds to reset everything.</p>
             <p>Move the joystick horizontally to change the LFO frequency.</p>
             <p>Move the joystick vertically to change the number of partials for additive synthesis.</p>
             <p>Turn the dial to increase the pitch.</p>
-            <p>Click the button to toggle the LFO.</p>
+            <p>Click the button for 2 seconds to toggle the LFO.</p>
 
         </div>
 
@@ -65,31 +64,31 @@
                 <button id="lfoOff">LFO Off</button>
             </div>
 
+            <!--
             <label id="lfoFrequency">LFO Frequency:
                 <input id="lfoFreq" type="range" min=1 max=10 value=5 oninput="updateLfo(this.value)"></input>
             </label>
-
             <br>
+            -->
 
+            <!--
             <label id="partials">Number of Partials (for additive synthesis):
                 <input id="numberOfPartials" type="range" min=1 max=10 value=5
                     oninput="updatePartialNum(this.value)"></input>
             </label>
-
             <br>
+            -->
 
             <label id="partialDist">Partial distance (for additive synthesis): </p>
                 <input id="partialDistance" type="range" min=1 max=100 value=15
                     oninput="updatePartialDistance(this.value)"></input>
             </label>
-
             <br>
 
             <label id="modFreq">Modulator frequency (for AM and FM)</p>
                 <input id="modulatorFreqency" type="range" min=1 max=1000 value=100
                     oninput="updateFreq(this.value)"></input>
             </label>
-
             <br>
 
             <label id="indexOfModulation">Control index of modulation (for FM synthesis):

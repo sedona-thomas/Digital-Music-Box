@@ -40,7 +40,7 @@ uint8_t ValueQueue::median() {
   for (int i = 0; i < temp.size() / 2; i++) {
     it++;
   }
-  return it;
+  return *it;
 }
 
 inline size_t ValueQueue::size() { return values.size(); }
