@@ -8,113 +8,23 @@ var esp32BaudRate = 115200;
 var singleInt = false; // if single integers are being sent over the data stream
 var tags = false; // if HTML style tags are being sent over the data stream
 
-// Document Click EventListener: triggers when user clicks anywhere on the page
-document.addEventListener('click', async () => {
-    setupPort();
-    setupReader();
-    readLoop();
-});
+var port;
+var reader;
 
-// setupPort(): asks user to select port
-async function setupPort() {
-    var port = await navigator.serial.requestPort();
-    await port.open({ baudRate: esp32BaudRate });
-}
-
-// setupReader(): sets up a serial port input stream reader
-function setupReader() {
-    let decoder = new TextDecoderStream();
-    inputDone = port.readable.pipeTo(decoder.writable);
-    inputStream = decoder.readable;
-    var reader = inputStream.getReader();
-}
-
-// readLoop(): reads and processes input stream values
-async function readLoop() {
-    counterVal = 0;
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) {
-            // Allow the serial port to be closed later.
-            console.log("closing connection")
-            reader.releaseLock();
-            break;
-        }
-        if (value) {
-            data = parseValue(value);
-            if (!isNaN(data)) {
-                counterVal += data / 100.0;
-                changeBackgroundColor(counterVal);
-            }
-        }
-    }
-};
-
-// parseValue(): parses value of serial input stream
-function parseValue(value) {
-    if (singleInt) {
-        return parseInt(value);
-    } else if (tags) {
-        return parseTags(value);
-    } else {
-        return parseJSON(value);
-    }
-}
-
-// parseTags(): parses input as HTML style tags
-function parseTags(value) {
-    // needs to be written if tag system used with python is needed
-    return;
-}
-
-// parseJSON(): parses input as JSON format
-function parseJSON(value) {
-    return JSON.parse(value)["data"];
-}
-
-// changeBackgroundColor(): updates the background color for current counter value
-function changeBackgroundColor(counterVal) {
-    redVal = (1 + Math.sin(counterVal)) * (255 / 2);
-    greenVal = 60;
-    blueVal = 50;
-    document.body.style.backgroundColor = 'rgb(' + redVal + ',  ' + greenVal + ', ' + blueVal + ')';
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- * Sedona Thomas
- * keyboard.js: plays notes when letters are pressed
- */
-
-/*
-let numberOfPartials = 5;
-let partialDistance = 15;
-let modulatorFrequencyValue = 100;
-let modulationIndexValue = 100;
-let lfoFreq = 2;
-
-function updatePartialNum(value) { numberOfPartials = value; };
-function updatePartialDistance(value) { partialSize = value; };
-function updateFreq(value) { modulatorFrequencyValue = value; };
-function updateIndex(value) { modulationIndexValue = value; };
-function updateLfo(value) { lfoFreq = value; };
-
-document.addEventListener("DOMContentLoaded", function (event) {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}, false);
+var audioCtx;
+var activeOscillators = {};
+var activeGainNodes = {};
+var mode = 'single';
+var waveform = 'sine';
+var lfo = false;
+var numberOfPartials = 5;
+var partialDistance = 15;
+var modulatorFrequencyValue = 100;
+var modulationIndexValue = 100;
+var lfoFreq = 2;
+octave = 1;
+var octave;
+var octaves = [1 / 4, 1 / 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 const keyboardFrequencyMap =
 {
@@ -173,14 +83,141 @@ const frequencyColorMap =
     '85': '#FFFFFF',  //U - B
 }
 
+// Document Click EventListener: triggers when user clicks anywhere on the page
+$("#start_button").on('click', async () => {
+    removePrompt();
+    await setupPort();
+    setupReader();
+    setupAudio();
+    readLoop();
+});
+
 window.addEventListener('keydown', keyDown, false);
 window.addEventListener('keyup', keyUp, false);
 
-var activeOscillators = {}
-var activeGainNodes = {}
-var mode = 'single';
-var waveform = 'sine';
-var lfo = false;
+// removePrompt(): removes starting prompt
+function removePrompt() {
+    let div = document.getElementById('start_prompt');
+    div.parentNode.removeChild(div);
+}
+
+// setupPort(): asks user to select port
+async function setupPort() {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: esp32BaudRate });
+}
+
+// setupReader(): sets up a serial port input stream reader
+function setupReader() {
+    let decoder = new TextDecoderStream();
+    inputDone = port.readable.pipeTo(decoder.writable);
+    inputStream = decoder.readable;
+    reader = inputStream.getReader();
+}
+
+// setupAudio(): sets up audio context and initializes modes
+function setupAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    resetModes();
+}
+
+// reseteModes(): sets the initial values for the various modes
+function resetModes() {
+    mode = 'single';
+    waveform = 'sine';
+    lfo = false;
+    numberOfPartials = 5;
+    partialDistance = 15;
+    modulatorFrequencyValue = 100;
+    modulationIndexValue = 100;
+    lfoFreq = 2;
+}
+
+// readLoop(): reads and processes input stream values
+async function readLoop() {
+    counterVal = 0;
+    while (true) {
+        const { value, done } = await reader.read();
+        string = value;
+        if (string.charAt(0) == "{") {
+            while (!isJSON(string) && string.length < 1000) {
+                const { value, done } = await reader.read();
+                string += value;
+            }
+        }
+
+        if (isJSON(string)) {
+            if (done) {
+                // Allow the serial port to be closed later.
+                console.log("closing connection")
+                reader.releaseLock();
+                break;
+            }
+            if (string) {
+                data = parseValue(string);
+                controlKeyboardParameters(data);
+            }
+        }
+    }
+};
+
+// controlKeyboardParameters(): manages sensor input to control keyboard
+function controlKeyboardParameters(data) {
+    octave = octaves[Math.floor(data["potentiometer_octave"] / (256 / octaves.length))];
+
+    if (data["button_mode"] == 0) {
+        resetModes();
+    }
+
+    if (data["joystick_joystick1"]["buttonsw"] == 0) {
+        lfo = !lfo; ƒ
+    }
+
+    if (data["joystick_joystick1"]["potentiometerx"] > 250) {
+        lfoFreq += 1;
+    } else if (data["joystick_joystick1"]["potentiometerx"] < 5) {
+        lfoFreq -= 1;
+    }
+
+    if (data["joystick_joystick1"]["potentiometery"] > 250) {
+        numberOfPartials += 1;
+    } else if (data["joystick_joystick1"]["potentiometery"] > 5) {
+        numberOfPartials -= 1;
+    }
+}
+
+// parseValue(): parses value of serial input stream as JSON format
+function parseValue(value) {
+    if (isJSON(value)) {
+        return JSON.parse(value)["data"];
+    } else {
+        return {}
+    }
+}
+
+// isJSON(): checks if string is in appropriate JSON format
+function isJSON(string) {
+    try {
+        JSON.parse(string);
+    } catch (exception) {
+        return false;
+    }
+    return true;
+}
+
+// changeBackgroundColor(): updates the background color for current counter value
+function changeBackgroundColor(counterVal) {
+    redVal = (1 + Math.sin(counterVal)) * (255 / 2);
+    greenVal = 60;
+    blueVal = 50;
+    document.body.style.backgroundColor = 'rgb(' + redVal + ',  ' + greenVal + ', ' + blueVal + ')';
+}
+
+function updatePartialNum(value) { numberOfPartials = value; };
+function updatePartialDistance(value) { partialSize = value; };
+function updateFreq(value) { modulatorFrequencyValue = value; };
+function updateIndex(value) { modulationIndexValue = value; };
+function updateLfo(value) { lfoFreq = value; };
 
 // buttons to switch modes
 const singleButton = document.getElementById("single");
@@ -246,7 +283,7 @@ function playNote(key) {
 
     // create oscillator and connect to gain node
     const osc = audioCtx.createOscillator();
-    osc.frequency.setValueAtTime(keyboardFrequencyMap[key], audioCtx.currentTime);
+    osc.frequency.setValueAtTime((keyboardFrequencyMap[key] * octave), audioCtx.currentTime);
     osc.type = waveform;
     osc.connect(gainNode).connect(audioCtx.destination);
     osc.start();
@@ -255,15 +292,7 @@ function playNote(key) {
     activeGainNodes[key] = [gainNode];
     activeOscillators[key] = [osc];
 
-    if (lfo) {
-        let lfo = audioCtx.createOscillator();
-        lfo.frequency.value = lfoFreq;
-        let lfoGain = audioCtx.createGain();
-        lfoGain.gain.value = 10;
-        lfo.connect(lfoGain).connect(osc.frequency);
-        lfo.start();
-        activeOscillators[key].push(lfo);
-    }
+    handleLFO(key, 10, osc);
 
     // attack (keeps total of gain nodes less than 1)
     let gainNodes = Object.keys(activeGainNodes).length;
@@ -288,7 +317,7 @@ function playNoteAdditive(key) {
 
         // create oscillator and connect to gain node
         const osc = audioCtx.createOscillator();
-        let freq = keyboardFrequencyMap[key] * (i + 1);
+        let freq = (keyboardFrequencyMap[key] * octave) * (i + 1);
         freq += ((i % 2) * -1) * (i + 1) * partialDistance * Math.random();
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         osc.type = waveform;
@@ -297,15 +326,7 @@ function playNoteAdditive(key) {
         activeGainNodes[key].push(gainNode);
         activeOscillators[key].push(osc);
 
-        if (lfo) {
-            let lfo = audioCtx.createOscillator();
-            lfo.frequency.value = lfoFreq;
-            let lfoGain = audioCtx.createGain();
-            lfoGain.gain.value = 10;
-            lfo.connect(lfoGain).connect(osc.frequency);
-            lfo.start();
-            activeOscillators[key].push(lfo);
-        }
+        handleLFO(key, 10, osc);
     }
 
     // attack (keeps total of gain nodes less than 1)
@@ -327,7 +348,7 @@ function playNoteAM(key) {
     let carrier = audioCtx.createOscillator();
     let modulatorFreq = audioCtx.createOscillator();
     carrier.type = waveform;
-    carrier.frequency.setValueAtTime(keyboardFrequencyMap[key], audioCtx.currentTime);
+    carrier.frequency.setValueAtTime((keyboardFrequencyMap[key] * octave), audioCtx.currentTime);
     modulatorFreq.frequency.value = modulatorFrequencyValue;
 
     const modulated = audioCtx.createGain();
@@ -350,15 +371,7 @@ function playNoteAM(key) {
     activeGainNodes[key] = [gainNode, modulated, depth];
     activeOscillators[key] = [carrier, modulatorFreq];
 
-    if (lfo) {
-        let lfo = audioCtx.createOscillator();
-        lfo.frequency.value = lfoFreq;
-        let lfoGain = audioCtx.createGain();
-        lfoGain.gain.value = 300;
-        lfo.connect(lfoGain).connect(modulatorFreq.frequency);
-        lfo.start();
-        activeOscillators[key].push(lfo);
-    }
+    handleLFO(key, 300, modulatorFreq);
 
     // attack (keeps total of gain nodes less than 1)
     let gainNodes = Object.keys(activeGainNodes).length;
@@ -380,7 +393,7 @@ function playNoteFM(key) {
 
     let carrier = audioCtx.createOscillator();
     carrier.type = waveform;
-    carrier.frequency.value = keyboardFrequencyMap[key];
+    carrier.frequency.value = (keyboardFrequencyMap[key] * octave);
 
     modulatorFreq.connect(modulationIndex);
     modulationIndex.connect(carrier.frequency);
@@ -397,15 +410,7 @@ function playNoteFM(key) {
     activeGainNodes[key] = [gainNode, modulationIndex];
     activeOscillators[key] = [carrier, modulatorFreq];
 
-    if (lfo) {
-        let lfo = audioCtx.createOscillator();
-        lfo.frequency.value = lfoFreq;
-        let lfoGain = audioCtx.createGain();
-        lfoGain.gain.value = 300;
-        lfo.connect(lfoGain).connect(modulatorFreq.frequency);
-        lfo.start();
-        activeOscillators[key].push(lfo);
-    }
+    handleLFO(key, 300, modulatorFreq);
 
     // attack (keeps total of gain nodes less than 1)
     let gainNodes = Object.keys(activeGainNodes).length;
@@ -437,5 +442,14 @@ function stopNote(key) {
     delete activeOscillators[key];
 }
 
-
-*/
+function handleLFO(key, value, osc) {
+    if (lfo) {
+        let lfo = audioCtx.createOscillator();
+        lfo.frequency.value = lfoFreq;
+        let lfoGain = audioCtx.createGain();
+        lfoGain.gain.value = value;
+        lfo.connect(lfoGain).connect(osc.frequency);
+        lfo.start();
+        activeOscillators[key].push(lfo);
+    }
+}

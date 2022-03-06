@@ -22,12 +22,23 @@
         </div>
 
         <div id="home" role="main">
-            <h1>Keyboard</h1>
+
+            <h1>Digital Synthesizer</h1>
+
+            <div id="start_prompt" role="alert">
+                <p>Click below to begin.</p>
+                <button id="start_button">Click to Start!</button>
+            </div>
+
+            <br>
+
             <p>Click the letter keys to play the keyboard.</p>
-            <p>Move the joystick to ______________.</p>
-            <p>Press the joystick to _____________.</p>
+            <p>Click the joystick to toggle the LFO.</p>
+            <p>Move the joystick horizontally to change the LFO frequency.</p>
+            <p>Move the joystick vertically to change the number of partials for additive synthesis.</p>
             <p>Turn the dial to increase the pitch.</p>
-            <p>Click the button to reset everything.</p>
+            <p>Hold down the button for 4 seconds to reset everything.</p>
+
         </div>
 
         <div id="modes">
@@ -58,20 +69,28 @@
                 <input id="lfoFreq" type="range" min=1 max=10 value=5 oninput="updateLfo(this.value)"></input>
             </label>
 
+            <br>
+
             <label id="partials">Number of Partials (for additive synthesis):
                 <input id="numberOfPartials" type="range" min=1 max=10 value=5
                     oninput="updatePartialNum(this.value)"></input>
             </label>
+
+            <br>
 
             <label id="partialDist">Partial distance (for additive synthesis): </p>
                 <input id="partialDistance" type="range" min=1 max=100 value=15
                     oninput="updatePartialDistance(this.value)"></input>
             </label>
 
+            <br>
+
             <label id="modFreq">Modulator frequency (for AM and FM)</p>
                 <input id="modulatorFreqency" type="range" min=1 max=1000 value=100
                     oninput="updateFreq(this.value)"></input>
             </label>
+
+            <br>
 
             <label id="indexOfModulation">Control index of modulation (for FM synthesis):
                 <input id="modulationIndex" type="range" min=1 max=1000 value=100

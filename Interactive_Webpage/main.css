@@ -30,6 +30,16 @@ ul { list-style-type: none; }
 
 #dashed_list { list-style-type: '- '; }
 
+#start_prompt {
+    font-size: 60px; 
+    color: #FF0000
+}
+
+#start_button {
+    font-size: 50px; 
+    color: #BB0000
+}
+
 hr {
     background-color: #000000;
     display: block; 

@@ -5,6 +5,7 @@
 #define BAUDRATE 115200     // baudrate for serial communications
 #define DISPLAY_VALUES true // true: sensors; false: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
+#define BUTTON_DELAY 50     // delays button if defined
 
 #include "ValueQueue.h"
 #include "esp32_screen.h"
@@ -61,8 +62,8 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Button button = Button("button1", 37, JSON);
-Potentiometer potentiometer = Potentiometer("potentiometer1", 12, JSON);
+Button button = Button("mode", 37, JSON);
+Potentiometer potentiometer = Potentiometer("octave", 12, JSON);
 Joystick joystick = Joystick("joystick1", 27, 26, 25, JSON);
 
 void setupSerial();
@@ -112,6 +113,9 @@ Button::Button(std::string name_in, int pin_in, bool json_in) {
   name = name_in;
   pin = pin_in;
   value = 0;
+#ifdef BUTTON_DELAY
+  values = ValueQueue(BUTTON_DELAY);
+#endif
   json = json_in;
 }
 
@@ -119,6 +123,9 @@ Button::Button(int pin_in, bool json_in) {
   name = "";
   pin = pin_in;
   value = 0;
+#ifdef BUTTON_DELAY
+  values = ValueQueue(BUTTON_DELAY);
+#endif
   json = json_in;
 }
 
@@ -214,9 +221,9 @@ void Potentiometer::send() {
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
   name = name_in;
-  potentiometerX = Potentiometer("x_" + name_in, pin_X, json_in);
-  potentiometerY = Potentiometer("y_" + name_in, pin_Y, json_in);
-  buttonSW = Button("sw_" + name_in, pin_SW, json_in);
+  potentiometerX = Potentiometer("x", pin_X, json_in);
+  potentiometerY = Potentiometer("y", pin_Y, json_in);
+  buttonSW = Button("sw", pin_SW, json_in);
   json = json_in;
 }
 
