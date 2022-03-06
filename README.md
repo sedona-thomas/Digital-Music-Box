@@ -44,13 +44,12 @@
 - Open Terminal
 - Download pyserial `conda install pyserial`
 
-### Test ESP32 Inputs
+#### Upload Esp32 Serial Communication
 
-- 
-
-### Upload Sensor Program
-
-- 
+- Open the Arduino IDE
+- Open `Esp32_Serial_Communication/device/device.ino` from the Arduino IDE
+- Plug in the ESP32 TTGO T-Display
+- Select `Sketch > Upload`
 
 ### Build Hardware
 
@@ -75,7 +74,7 @@
 
 ### Make Case
 
-## Cut Case
+#### Cut Case
 
 - Download `Case/caseplans.svg`
 - Upload file to a laser cutter
@@ -86,7 +85,7 @@
 - Cut a 1.50 in block of wood for the joystick
 - Cut a 2.00 in block of wood for the potentiometer
 
-## Assemble Case
+#### Assemble Case
 
 - Use acrylic glue to assemble the box, but do not attach the bottom panel with the single hole in the corner
 - Use sandpaper to remove all harsh edges on the blocks of wood
@@ -98,8 +97,8 @@
 ### Run Device
 
 - Plug the device into your computer
-- Run `./_______.py`
-
+- Open `Digital_Music_Box/index.html` in the browser of your choice
+- Play your digital synthesizer and control it with your music box 
 
 ## More Information
 
