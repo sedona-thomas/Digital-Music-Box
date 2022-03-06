@@ -90,11 +90,13 @@ void setupSerial() {
 // sendPeripherals(): sends values of all peripherals
 void sendPeripherals() {
   if (JSON) {
-    Serial.print("{ data:");
+    Serial.print("{ \"data\": {");
     button.send();
+    Serial.print(",");
     potentiometer.send();
+    Serial.print(",");
     joystick.send();
-    Serial.println("}");
+    Serial.println("}}");
   } else {
     Serial.print("<data>");
     button.send();
@@ -134,11 +136,14 @@ void Button::read() {
 void Button::send() {
   Button::read();
   if (json) {
-    Serial.print("button_");
-    Serial.print(name.c_str());
-    Serial.print(": ");
+    if (name.length() > 0) {
+      Serial.print("\"button_");
+      Serial.print(name.c_str());
+      Serial.print("\": ");
+    } else {
+      Serial.print("\"button\": ");
+    }
     Serial.print(value);
-    Serial.print(",");
   } else {
     Serial.print("<button_");
     Serial.print(name.c_str());
@@ -180,16 +185,13 @@ void Potentiometer::send() {
   Potentiometer::read();
   if (json) {
     if (name.length() > 0) {
-      Serial.print("potentiometer_");
+      Serial.print("\"potentiometer_");
       Serial.print(name.c_str());
-      Serial.print(": ");
-      Serial.print(value);
-      Serial.print(",");
+      Serial.print("\" : ");
     } else {
-      Serial.print("potentiometer: ");
-      Serial.print(value);
-      Serial.print(",");
+      Serial.print("\"potentiometer\": ");
     }
+    Serial.print(value);
   } else {
     if (name.length() > 0) {
       Serial.print("<potentiometer_");
@@ -212,9 +214,9 @@ void Potentiometer::send() {
 Joystick::Joystick(std::string name_in, int pin_X, int pin_Y, int pin_SW,
                    bool json_in) {
   name = name_in;
-  potentiometerX = Potentiometer("_x" + name_in, pin_X, json_in);
-  potentiometerY = Potentiometer("_y" + name_in, pin_Y, json_in);
-  buttonSW = Button("_sw" + name_in, pin_SW, json_in);
+  potentiometerX = Potentiometer("x_" + name_in, pin_X, json_in);
+  potentiometerY = Potentiometer("y_" + name_in, pin_Y, json_in);
+  buttonSW = Button("sw_" + name_in, pin_SW, json_in);
   json = json_in;
 }
 
@@ -224,12 +226,18 @@ void Joystick::send() {
   printToScreen("joystick");
 #endif
   if (json) {
-    Serial.print("joystick_");
-    Serial.print(name.c_str());
-    Serial.print(": ");
+    if (name.length() > 0) {
+      Serial.print("\"joystick_");
+      Serial.print(name.c_str());
+      Serial.print("\": ");
+    } else {
+      Serial.print("\"joystick\": ");
+    }
     Serial.print("{");
     potentiometerX.send();
+    Serial.print(",");
     potentiometerY.send();
+    Serial.print(",");
     buttonSW.send();
     Serial.print("},");
   } else {
@@ -237,7 +245,9 @@ void Joystick::send() {
     Serial.print(name.c_str());
     Serial.print(">");
     potentiometerX.send();
+    Serial.print(",");
     potentiometerY.send();
+    Serial.print(",");
     buttonSW.send();
     Serial.print("</joystick_");
     Serial.print(name.c_str());

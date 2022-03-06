@@ -22,8 +22,62 @@
         </div>
 
         <div id="home" role="main">
-            <h1>Interactive Webpage</h1>
-            <p>Click anywhere to begin.</p>
+            <h1>Keyboard</h1>
+            <p>Click the letter keys to play the keyboard.</p>
+            <p>Move the joystick to ______________.</p>
+            <p>Press the joystick to _____________.</p>
+            <p>Turn the dial to increase the pitch.</p>
+            <p>Click the button to reset everything.</p>
+        </div>
+
+        <div id="modes">
+
+            <div id="modeSelection">
+                <p>Choose from the following modes:</p>
+                <button id="single">Single</button>
+                <button id="additive">Additive</button>
+                <button id="am">AM</button>
+                <button id="fm">FM</button>
+            </div>
+
+            <div id="modeSelection">
+                <p>Choose from the following waveforms:</p>
+                <button id="sine">Sine</button>
+                <button id="sawtooth">Sawtooth</button>
+                <button id="square">Square</button>
+                <button id="triangle">Triangle</button>
+            </div>
+
+            <div id="modeSelection">
+                <p>Turn on and off LFO:</p>
+                <button id="lfoOn">LFO On</button>
+                <button id="lfoOff">LFO Off</button>
+            </div>
+
+            <label id="lfoFrequency">LFO Frequency:
+                <input id="lfoFreq" type="range" min=1 max=10 value=5 oninput="updateLfo(this.value)"></input>
+            </label>
+
+            <label id="partials">Number of Partials (for additive synthesis):
+                <input id="numberOfPartials" type="range" min=1 max=10 value=5
+                    oninput="updatePartialNum(this.value)"></input>
+            </label>
+
+            <label id="partialDist">Partial distance (for additive synthesis): </p>
+                <input id="partialDistance" type="range" min=1 max=100 value=15
+                    oninput="updatePartialDistance(this.value)"></input>
+            </label>
+
+            <label id="modFreq">Modulator frequency (for AM and FM)</p>
+                <input id="modulatorFreqency" type="range" min=1 max=1000 value=100
+                    oninput="updateFreq(this.value)"></input>
+            </label>
+
+            <label id="indexOfModulation">Control index of modulation (for FM synthesis):
+                <input id="modulationIndex" type="range" min=1 max=1000 value=100
+                    oninput="updateIndex(this.value)"></input>
+            </label>
+
         </div>
 
     </div>

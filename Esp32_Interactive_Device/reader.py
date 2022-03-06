@@ -10,6 +10,7 @@
 """
 
 import serial
+import json
 import re
 from collections import defaultdict
 
@@ -114,7 +115,18 @@ class DisplayWithPeripherals(object):
         self.parser = TagParser(self)
 
     """
-    Updates the current sensor values
+    Updates the current sensor values using json format
+
+    :returns: returns nothing
+    """
+
+    def readJSON(self):
+        sensor = str(self.s.readline(), 'ascii').strip()
+        print(sensor)
+        self.values = json.loads(sensor)
+
+    """
+    Updates the current sensor values using tagging format
 
     :returns: returns nothing
     """
@@ -154,6 +166,7 @@ class DisplayWithPeripherals(object):
 if __name__ == "__main__":
     display = DisplayWithPeripherals()
     while(True):
-        display.update()
+        # display.update()
+        display.readJSON()
         print(display.values)
         print()
