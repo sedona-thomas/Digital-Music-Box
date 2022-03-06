@@ -5,7 +5,7 @@
 #define BAUDRATE 115200     // baudrate for serial communications
 #define DISPLAY_VALUES true // true: sensors; false: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
-#define BUTTON_DELAY 50     // delays button if defined
+//#define BUTTON_DELAY 20     // delays button if defined
 
 #include "ValueQueue.h"
 #include "esp32_screen.h"

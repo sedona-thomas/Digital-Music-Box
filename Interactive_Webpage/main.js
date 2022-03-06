@@ -163,27 +163,36 @@ async function readLoop() {
 
 // controlKeyboardParameters(): manages sensor input to control keyboard
 function controlKeyboardParameters(data) {
+
+    console.log("here")
+
     octave = octaves[Math.floor(data["potentiometer_octave"] / (256 / octaves.length))];
 
+    console.log(data)
+
     if (data["button_mode"] == 0) {
-        resetModes();
+        lfo = !lfo;
+        console.log("lfo")
     }
 
     if (data["joystick_joystick1"]["buttonsw"] == 0) {
-        lfo = !lfo; ƒ
+        resetModes();
+        console.log("reset")
     }
 
-    if (data["joystick_joystick1"]["potentiometerx"] > 250) {
-        lfoFreq += 1;
-    } else if (data["joystick_joystick1"]["potentiometerx"] < 5) {
-        lfoFreq -= 1;
-    }
+    if (data["joystick_joystick1"]["potentiometerx"] < 5) {
+        lfoFreq += 5;
+    } else if (data["joystick_joystick1"]["potentiometerx"] > 250) {
+        lfoFreq -= 5;
+    } else { console.log("nolfo") }
 
     if (data["joystick_joystick1"]["potentiometery"] > 250) {
-        numberOfPartials += 1;
+        numberOfPartials += 5;
+        console.log("up")
     } else if (data["joystick_joystick1"]["potentiometery"] > 5) {
-        numberOfPartials -= 1;
-    }
+        numberOfPartials -= 5;
+        console.log("down")
+    } else { console.log("nopartial") }
 }
 
 // parseValue(): parses value of serial input stream as JSON format
@@ -247,6 +256,9 @@ lfoOffButton.addEventListener('click', function () { lfo = false; }, false);
 
 // keyDown(): plays note of pressed key if not currently playing
 function keyDown(event) {
+
+    console.log(numberOfPartials);
+
     const key = (event.detail || event.which).toString();
     if (keyboardFrequencyMap[key] && !activeOscillators[key]) {
         if (mode == "single") {
