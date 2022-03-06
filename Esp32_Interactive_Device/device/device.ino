@@ -239,7 +239,7 @@ void Joystick::send() {
     potentiometerY.send();
     Serial.print(",");
     buttonSW.send();
-    Serial.print("},");
+    Serial.print("}");
   } else {
     Serial.print("<joystick_");
     Serial.print(name.c_str());
