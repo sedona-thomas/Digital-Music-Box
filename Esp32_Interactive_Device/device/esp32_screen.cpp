@@ -15,7 +15,7 @@ void resetScreen() {
   tft.setTextSize(currentTextSize);
   tft.fillScreen(currentBackgroundColor);
   tft.setTextColor(currentTextColor);
-  tft.setCursor(0, 0, currentTextSize);
+  tft.setCursor(1, 1, currentTextSize);
   tft.setRotation(2);
 }
 
