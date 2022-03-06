@@ -18,6 +18,7 @@ public:
   inline void pop();
   bool contains(uint8_t);
   uint8_t average();
+  uint8_t median();
   inline size_t size();
 };
 

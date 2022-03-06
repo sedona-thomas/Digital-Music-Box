@@ -181,7 +181,7 @@ Potentiometer::Potentiometer(int pin_in, bool json_in) {
 // read(): reads potentiometer value
 void Potentiometer::read() {
   values.add(analogRead(pin));
-  value = values.average();
+  value = values.median();
 #if DISPLAY_VALUES
   printSensorToScreen("potentiometer" + name, value);
 #endif
