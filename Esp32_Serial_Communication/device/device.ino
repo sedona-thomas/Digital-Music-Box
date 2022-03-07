@@ -161,7 +161,7 @@ void Button::send() {
   //   Serial.print("</button_");
   //   Serial.print(name.c_str());
   //   Serial.print(">");
-}
+  //}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
