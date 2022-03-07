@@ -305,3 +305,4 @@ void SerialCommunication::sendSerialObject(std::string sensor, uint8_t value) {
       Serial.print(">");
     }
   }
+}
