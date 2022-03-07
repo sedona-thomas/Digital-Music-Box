@@ -28,6 +28,7 @@ protected:
   std::string name;
   bool json;
   virtual void send(){};
+  void sendSerialObject(std::string, uint8_t);
 };
 
 class Button : public Sensor, public SerialCommunication {
@@ -141,25 +142,26 @@ void Button::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
-  Button::read();
-  if (json) {
-    if (name.length() > 0) {
-      Serial.print("\"button_");
-      Serial.print(name.c_str());
-      Serial.print("\": ");
-    } else {
-      Serial.print("\"button\": ");
-    }
-    Serial.print(value);
-  } else {
-    Serial.print("<button_");
-    Serial.print(name.c_str());
-    Serial.print(">");
-    Serial.print(value);
-    Serial.print("</button_");
-    Serial.print(name.c_str());
-    Serial.print(">");
-  }
+  read();
+  sendSerialObject("potentiometer", name, value, json);
+  // if (json) {
+  //   if (name.length() > 0) {
+  //     Serial.print("\"button_");
+  //     Serial.print(name.c_str());
+  //     Serial.print("\": ");
+  //   } else {
+  //     Serial.print("\"button\": ");
+  //   }
+  //   Serial.print(value);
+  // } else {
+  //   Serial.print("<button_");
+  //   Serial.print(name.c_str());
+  //   Serial.print(">");
+  //   Serial.print(value);
+  //   Serial.print("</button_");
+  //   Serial.print(name.c_str());
+  //   Serial.print(">");
+}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,31 +191,33 @@ void Potentiometer::read() {
 
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
-  Potentiometer::read();
-  if (json) {
-    if (name.length() > 0) {
-      Serial.print("\"potentiometer_");
-      Serial.print(name.c_str());
-      Serial.print("\" : ");
-    } else {
-      Serial.print("\"potentiometer\": ");
-    }
-    Serial.print(value);
-  } else {
-    if (name.length() > 0) {
-      Serial.print("<potentiometer_");
-      Serial.print(name.c_str());
-      Serial.print(">");
-      Serial.print(value);
-      Serial.print("</potentiometer_");
-      Serial.print(name.c_str());
-      Serial.print(">");
-    } else {
-      Serial.print("<potentiometer>");
-      Serial.print(value);
-      Serial.print("</potentiometer>");
-    }
-  }
+  read();
+  sendSerialObject("potentiometer", name, value, json);
+
+  // if (json) {
+  //   if (name.length() > 0) {
+  //     Serial.print("\"potentiometer_");
+  //     Serial.print(name.c_str());
+  //     Serial.print("\" : ");
+  //   } else {
+  //     Serial.print("\"potentiometer\": ");
+  //   }
+  //   Serial.print(value);
+  // } else {
+  //   if (name.length() > 0) {
+  //     Serial.print("<potentiometer_");
+  //     Serial.print(name.c_str());
+  //     Serial.print(">");
+  //     Serial.print(value);
+  //     Serial.print("</potentiometer_");
+  //     Serial.print(name.c_str());
+  //     Serial.print(">");
+  //   } else {
+  //     Serial.print("<potentiometer>");
+  //     Serial.print(value);
+  //     Serial.print("</potentiometer>");
+  //   }
+  // }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,3 +265,43 @@ void Joystick::send() {
     Serial.print(">");
   }
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+void SerialCommunication::sendSerialObject(std::string sensor, uint8_t value) {
+  if (json) {
+    if (name.length() > 0) {
+      Serial.print("\"");
+      Serial.print(sensor.c_str());
+      Serial.print("_");
+      Serial.print(name.c_str());
+      Serial.print("\": ");
+    } else {
+      Serial.print("\"");
+      Serial.print(sensor.c_str());
+      Serial.print("\": ");
+    }
+    Serial.print(value);
+  } else {
+    if (name.length() > 0) {
+      Serial.print("<");
+      Serial.print(sensor.c_str());
+      Serial.print("_");
+      Serial.print(name.c_str());
+      Serial.print(">");
+      Serial.print(value);
+      Serial.print("</");
+      Serial.print(sensor.c_str());
+      Serial.print("_");
+      Serial.print(name.c_str());
+      Serial.print(">");
+    } else {
+      Serial.print("<");
+      Serial.print(sensor.c_str());
+      Serial.print(">");
+      Serial.print(value);
+      Serial.print("</");
+      Serial.print(sensor.c_str());
+      Serial.print(">");
+    }
+  }
