@@ -143,7 +143,7 @@ void Button::read() {
 // send(): sends data from peripheral over the serial connection
 void Button::send() {
   read();
-  sendSerialObject("potentiometer", name, value, json);
+  sendSerialObject("button", value);
   // if (json) {
   //   if (name.length() > 0) {
   //     Serial.print("\"button_");
@@ -192,7 +192,7 @@ void Potentiometer::read() {
 // send(): sends data from peripheral over the serial connection
 void Potentiometer::send() {
   read();
-  sendSerialObject("potentiometer", name, value, json);
+  sendSerialObject("potentiometer", value);
 
   // if (json) {
   //   if (name.length() > 0) {
