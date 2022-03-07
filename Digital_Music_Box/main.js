@@ -23,7 +23,7 @@ var modulatorFrequencyValue = 100;
 var modulationIndexValue = 100;
 var lfoFreq = 2;
 var octave = 1;
-var octaves = [1 / 4, 1 / 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+var octaves = [1 / 4, 1 / 2, 1, 2, 4, 8];
 
 const keyboardFrequencyMap =
 {
