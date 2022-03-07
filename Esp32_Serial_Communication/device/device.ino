@@ -27,7 +27,7 @@ class SerialCommunication {
 protected:
   std::string name;
   bool json;
-  virtual void send(){};
+  void send(){};
   void sendSerialObject(std::string, uint8_t);
 };
 
@@ -54,6 +54,7 @@ public:
   Joystick(){};
   Joystick(std::string, int, int, int, bool);
   void send();
+  void sendSerialObject();
 
 private:
   Potentiometer potentiometerX;
@@ -236,38 +237,12 @@ void Joystick::send() {
 #if DISPLAY_VALUES
   printToScreen("joystick");
 #endif
-  if (json) {
-    if (name.length() > 0) {
-      Serial.print("\"joystick_");
-      Serial.print(name.c_str());
-      Serial.print("\": ");
-    } else {
-      Serial.print("\"joystick\": ");
-    }
-    Serial.print("{");
-    potentiometerX.send();
-    Serial.print(",");
-    potentiometerY.send();
-    Serial.print(",");
-    buttonSW.send();
-    Serial.print("}");
-  } else {
-    Serial.print("<joystick_");
-    Serial.print(name.c_str());
-    Serial.print(">");
-    potentiometerX.send();
-    Serial.print(",");
-    potentiometerY.send();
-    Serial.print(",");
-    buttonSW.send();
-    Serial.print("</joystick_");
-    Serial.print(name.c_str());
-    Serial.print(">");
-  }
+  sendSerialObject();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// send(): sends data from peripheral over the serial connection
 void SerialCommunication::sendSerialObject(std::string sensor, uint8_t value) {
   if (json) {
     if (name.length() > 0) {
@@ -304,5 +279,36 @@ void SerialCommunication::sendSerialObject(std::string sensor, uint8_t value) {
       Serial.print(sensor.c_str());
       Serial.print(">");
     }
+  }
+}
+
+void Joystick::sendSerialObject() {
+  if (json) {
+    if (name.length() > 0) {
+      Serial.print("\"joystick_");
+      Serial.print(name.c_str());
+      Serial.print("\": ");
+    } else {
+      Serial.print("\"joystick\": ");
+    }
+    Serial.print("{");
+    potentiometerX.send();
+    Serial.print(",");
+    potentiometerY.send();
+    Serial.print(",");
+    buttonSW.send();
+    Serial.print("}");
+  } else {
+    Serial.print("<joystick_");
+    Serial.print(name.c_str());
+    Serial.print(">");
+    potentiometerX.send();
+    Serial.print(",");
+    potentiometerY.send();
+    Serial.print(",");
+    buttonSW.send();
+    Serial.print("</joystick_");
+    Serial.print(name.c_str());
+    Serial.print(">");
   }
 }
