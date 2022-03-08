@@ -104,7 +104,7 @@
 
 Medium Blog Post: [https://medium.com/@sedonathomas/interactive-device-3c5826457c24](https://medium.com/@sedonathomas/interactive-device-3c5826457c24)
 
-Youtube Demo: 
+Youtube Demo: [https://youtu.be/2rkQq6D6_u0](https://youtu.be/2rkQq6D6_u0)
 
 ##
 ## Special Thanks to Professor Mark Santolucito and the staff at the Barnard Design Center for all of their help!!!
