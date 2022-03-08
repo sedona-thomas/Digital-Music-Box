@@ -5,7 +5,7 @@
 #define BAUDRATE 115200     // baudrate for serial communications
 #define DISPLAY_VALUES true // true: sensors; false: rainbow background
 #define JSON true           // sends JSON data over serial connection not tagged
-//#define BUTTON_DELAY 20     // delays button if defined
+#define BUTTON_DELAY 50     // delays button if defined
 
 #include "ValueQueue.h"
 #include "esp32_screen.h"
@@ -145,24 +145,6 @@ void Button::read() {
 void Button::send() {
   read();
   sendSerialObject("button", value);
-  // if (json) {
-  //   if (name.length() > 0) {
-  //     Serial.print("\"button_");
-  //     Serial.print(name.c_str());
-  //     Serial.print("\": ");
-  //   } else {
-  //     Serial.print("\"button\": ");
-  //   }
-  //   Serial.print(value);
-  // } else {
-  //   Serial.print("<button_");
-  //   Serial.print(name.c_str());
-  //   Serial.print(">");
-  //   Serial.print(value);
-  //   Serial.print("</button_");
-  //   Serial.print(name.c_str());
-  //   Serial.print(">");
-  //}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,31 +176,6 @@ void Potentiometer::read() {
 void Potentiometer::send() {
   read();
   sendSerialObject("potentiometer", value);
-
-  // if (json) {
-  //   if (name.length() > 0) {
-  //     Serial.print("\"potentiometer_");
-  //     Serial.print(name.c_str());
-  //     Serial.print("\" : ");
-  //   } else {
-  //     Serial.print("\"potentiometer\": ");
-  //   }
-  //   Serial.print(value);
-  // } else {
-  //   if (name.length() > 0) {
-  //     Serial.print("<potentiometer_");
-  //     Serial.print(name.c_str());
-  //     Serial.print(">");
-  //     Serial.print(value);
-  //     Serial.print("</potentiometer_");
-  //     Serial.print(name.c_str());
-  //     Serial.print(">");
-  //   } else {
-  //     Serial.print("<potentiometer>");
-  //     Serial.print(value);
-  //     Serial.print("</potentiometer>");
-  //   }
-  // }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
