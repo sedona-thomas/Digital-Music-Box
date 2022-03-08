@@ -61,7 +61,7 @@
 #### Solder Potentiometer
 
 - Solder the `V_in` (voltage in, the first pin) end of the potentiometer to a 3V pin of the ESP32 (the 3V pin on the bottom left)
-- Solder the `V_out` (voltage out, the second pin) end of the potentiometer to the `GPIO Pin #13` of the ESP32
+- Solder the `V_out` (voltage out, the second pin) end of the potentiometer to the `GPIO Pin #12` of the ESP32
 - Solder the `GND` (ground, the third pin) end of the potentiometer to a ground pin of the ESP32 (the second ground pin on the top left)
 
 #### Solder Joystick
